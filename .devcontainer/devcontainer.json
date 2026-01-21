@@ -1,0 +1,74 @@
+{
+  "name": "LaTeX (IEEE Template)",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "james-yu.latex-workshop",
+        "valentjn.vscode-ltex",
+        "streetsidesoftware.code-spell-checker",
+        "lostintangent.RTL"
+      ],
+      "settings": {
+        "latex-workshop.latex.tools": [
+          {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+              "-lualatex",
+              "-shell-escape",
+              "%DOC%"
+            ],
+            "env": {}
+          },
+          {
+            "name": "lualatex",
+            "command": "lualatex",
+            "args": [
+              "-synctex=1",
+              "-shell-escape",
+              "%DOC%"
+            ],
+            "env": {}
+          },
+          {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+              "%DOCFILE%"
+            ],
+            "env": {}
+          }
+        ],
+        "latex-workshop.latex.recipes": [
+          {
+            "name": "latexmk",
+            "tools": [
+              "latexmk"
+            ]
+          },
+          {
+            "name": "lualatex → bibtex → lualatex",
+            "tools": [
+              "lualatex",
+              "bibtex",
+              "lualatex"
+            ]
+          }
+        ],
+        "latex-workshop.view.pdf.viewer": "external",
+        "latex-workshop.view.pdf.external.viewer.command": "xdg-open",
+        "latex-workshop.latex.autoBuild.run": "onSave"
+      }
+    }
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly"
+  ],
+  "remoteUser": "root"
+}
