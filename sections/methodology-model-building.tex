@@ -1,0 +1,244 @@
+% !TeX root = ../paper.tex
+\subsection{Model Building and Training}
+\label{sec:model-building}
+
+We implemented and evaluated three distinct approaches: Retrieval-Augmented Generation (RAG), model fine-tuning, and a hybrid combination. This section details the architecture, training pipeline, and technical implementation of each method.
+
+
+\subsubsection{RAG (Retrieval-Augmented Generation) Pipeline}
+\label{sec:rag-pipeline}
+
+\paragraph{Architecture Overview}
+The RAG system enhances large multimodal models with external medical knowledge through dynamic retrieval:
+
+\begin{enumerate}
+    \item \textbf{Retriever Component:}
+    \begin{itemize}
+        \item Embedding Model: [e.g., BioBERT, PubMedBERT, or domain-specific encoder]
+        \item Vector Store: [e.g., FAISS, Pinecone, ChromaDB]
+        \item Retrieval Strategy: [e.g., dense retrieval, hybrid (dense + sparse)]
+        \item Top-K Selection: [e.g., retrieve top 5-10 most relevant chunks]
+    \end{itemize}
+    
+    \item \textbf{Ranker Component (Optional):}
+    \begin{itemize}
+        \item Re-ranking Model: [e.g., cross-encoder for relevance scoring]
+        \item Purpose: Refine retrieval results for higher precision
+    \end{itemize}
+    
+    \item \textbf{Generator Component:}
+    \begin{itemize}
+        \item Base LMM: [e.g., GPT-4V, LLaVA, Gemini, Claude]
+        \item Context Window: [e.g., 32K tokens]
+        \item Input Format: Retrieved context + patient data + images
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{RAG Implementation Pipeline}
+\begin{enumerate}
+    \item \textbf{Query Processing:}
+    \begin{itemize}
+        \item Extract key medical terms from patient presentation
+        \item Generate query embeddings using retriever model
+    \end{itemize}
+    
+    \item \textbf{Retrieval Phase:}
+    \begin{itemize}
+        \item Similarity search in vector database
+        \item Retrieve top-K relevant medical knowledge chunks
+        \item Apply metadata filtering (disease category, source credibility)
+    \end{itemize}
+    
+    \item \textbf{Context Construction:}
+    \begin{itemize}
+        \item Combine retrieved knowledge with patient data
+        \item Format multimodal inputs (text + images)
+        \item Construct prompt template with clinical reasoning instructions
+    \end{itemize}
+    
+    \item \textbf{Generation Phase:}
+    \begin{itemize}
+        \item Feed enriched context to LMM
+        \item Generate diagnostic predictions with reasoning
+        \item Post-process outputs for structured format
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{RAG Configuration}
+\begin{itemize}
+    \item Chunk Size: [e.g., 512 tokens]
+    \item Overlap: [e.g., 50 tokens]
+    \item Top-K: [e.g., 5 documents]
+    \item Similarity Metric: [e.g., cosine similarity]
+    \item Temperature: [e.g., 0.3 for diagnostic tasks]
+\end{itemize}
+
+
+\subsubsection{Fine-tuning Pipeline}
+\label{sec:finetuning-pipeline}
+
+\paragraph{Base Model Selection}
+The selection of base model considered multiple factors:
+
+\begin{itemize}
+    \item \textbf{Model Candidates:}
+    \begin{itemize}
+        \item [e.g., LLaVA-Med, MedFlamingo, BioGPT, Clinical BERT variants]
+        \item Selection Criteria: Multimodal capability, medical domain knowledge, computational efficiency
+    \end{itemize}
+    
+    \item \textbf{Chosen Model:} [Specify your selected model]
+    \begin{itemize}
+        \item Architecture: [e.g., Vision encoder + Language model]
+        \item Parameters: [e.g., 7B, 13B]
+        \item Pretraining: [Describe pretraining data/domain]
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Fine-tuning Methodology}
+Given computational constraints, we employed parameter-efficient fine-tuning (PEFT):
+
+\begin{enumerate}
+    \item \textbf{LoRA (Low-Rank Adaptation):}
+    \begin{itemize}
+        \item Rank: [e.g., r=8 or r=16]
+        \item Alpha: [e.g., $\alpha$=16 or $\alpha$=32]
+        \item Target Modules: [e.g., query, key, value projections, attention layers]
+        \item Trainable Parameters: [e.g., $<$1\% of total parameters]
+    \end{itemize}
+    
+    \item \textbf{Alternative PEFT Methods (if used):}
+    \begin{itemize}
+        \item QLoRA: Quantization + LoRA for memory efficiency
+        \item Prefix Tuning: Learn soft prompts
+        \item Adapter Layers: Insert trainable modules
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Training Configuration}
+\begin{itemize}
+    \item \textbf{Optimization:}
+    \begin{itemize}
+        \item Optimizer: [e.g., AdamW]
+        \item Learning Rate: [e.g., 2e-4 with warmup]
+        \item Scheduler: [e.g., cosine annealing, linear decay]
+        \item Batch Size: [e.g., 8 per device, gradient accumulation=4]
+    \end{itemize}
+    
+    \item \textbf{Regularization:}
+    \begin{itemize}
+        \item Dropout: [e.g., 0.1]
+        \item Weight Decay: [e.g., 0.01]
+        \item Gradient Clipping: [e.g., max norm=1.0]
+    \end{itemize}
+    
+    \item \textbf{Training Procedure:}
+    \begin{itemize}
+        \item Epochs: [e.g., 10-20 epochs]
+        \item Early Stopping: Patience=[e.g., 3 epochs] on validation loss
+        \item Checkpoint Strategy: Save best model based on [metric]
+    \end{itemize}
+    
+    \item \textbf{Hardware:}
+    \begin{itemize}
+        \item GPUs: [e.g., 2x A100 40GB, or 4x V100 32GB]
+        \item Precision: [e.g., mixed precision FP16/BF16]
+        \item Training Time: [e.g., approximately X hours]
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Loss Function}
+\begin{itemize}
+    \item Primary Loss: [e.g., Cross-Entropy for classification, Language Modeling loss for generation]
+    \item Weighted Loss: [If handling class imbalance] weights=[specify]
+    \item Auxiliary Losses: [If any - e.g., contrastive loss for multimodal alignment]
+\end{itemize}
+
+
+\subsubsection{Hybrid Combination Approach}
+\label{sec:hybrid-approach}
+
+The hybrid approach integrates the strengths of both RAG and fine-tuning:
+
+\paragraph{Architecture}
+\begin{enumerate}
+    \item \textbf{Base:} Fine-tuned multimodal model with domain-specific adaptations
+    \item \textbf{Enhancement:} RAG layer for dynamic knowledge augmentation
+    \item \textbf{Integration Strategy:}
+    \begin{itemize}
+        \item \textbf{Option 1 - Sequential:} RAG retrieves context $\rightarrow$ fine-tuned model processes
+        \item \textbf{Option 2 - Parallel:} Both systems generate predictions $\rightarrow$ ensemble/fusion
+        \item \textbf{Option 3 - Adaptive:} Model decides when to invoke RAG based on confidence
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Implementation Details}
+\begin{itemize}
+    \item \textbf{Context Integration:} [Describe how retrieved knowledge is incorporated]
+    \item \textbf{Fusion Method:} [e.g., attention-based fusion, weighted averaging, gating mechanism]
+    \item \textbf{Inference Pipeline:}
+    \begin{enumerate}
+        \item Input processing (text + images)
+        \item RAG retrieval (if applicable)
+        \item Fine-tuned model forward pass
+        \item Context fusion
+        \item Output generation
+    \end{enumerate}
+\end{itemize}
+
+\paragraph{Advantages}
+\begin{itemize}
+    \item Combines model's learned diagnostic patterns with up-to-date medical knowledge
+    \item Provides better interpretability through retrieved evidence
+    \item Handles both common and rare diseases effectively
+\end{itemize}
+
+
+\subsubsection{Agent-based Approach (if applicable)}
+\label{sec:agent-approach}
+
+% Include this section if you implemented an agent-based system
+If an agent-based architecture was employed:
+
+\begin{itemize}
+    \item \textbf{Agent Framework:} [e.g., LangChain, AutoGPT, ReAct]
+    \item \textbf{Tools/Actions:}
+    \begin{itemize}
+        \item Medical knowledge retrieval
+        \item Differential diagnosis generation
+        \item Test ordering simulation
+        \item Literature search
+    \end{itemize}
+    \item \textbf{Reasoning Strategy:} [e.g., Chain-of-Thought, ReAct, Tree-of-Thoughts]
+    \item \textbf{Multi-step Workflow:} [Describe diagnostic reasoning steps]
+\end{itemize}
+
+
+\subsubsection{Model Training Summary}
+
+% Add table comparing the three approaches
+\begin{table}[htbp]
+\caption{Comparison of Model Approaches}
+\label{tab:model-comparison}
+\centering
+\small
+\begin{tabular}{llll}
+\hline
+\textbf{Aspect} & \textbf{RAG} & \textbf{Fine-tuning} & \textbf{Hybrid} \\
+\hline
+Training Required & No & Yes & Yes \\
+External Knowledge & Dynamic & Static & Dynamic \\
+Computational Cost & Low & High & Medium \\
+Interpretability & High & Low & High \\
+Rare Disease Handling & Good & Limited & Excellent \\
+\hline
+\end{tabular}
+\end{table}
+
+% Optional: Add training curves or architecture diagrams
+% \begin{figure}[htbp]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/training-curves}
+%   \caption{Fine-tuning training and validation curves}
+%   \label{fig:training-curves}
+% \end{figure}
