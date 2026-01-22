@@ -2,37 +2,14 @@
 \subsection{Model Building and Training}
 \label{sec:model-building}
 
-We implemented and evaluated three distinct approaches: Retrieval-Augmented Generation (RAG), model fine-tuning, and a hybrid combination. This section details the architecture, training pipeline, and technical implementation of each method.
-
+% TODO: Implement and describe three approaches: RAG, fine-tuning, and hybrid
 
 \subsubsection{RAG (Retrieval-Augmented Generation) Pipeline}
 \label{sec:rag-pipeline}
 
 \paragraph{Architecture Overview}
-The RAG system enhances large multimodal models with external medical knowledge through dynamic retrieval:
-
-\begin{enumerate}
-    \item \textbf{Retriever Component:}
-    \begin{itemize}
-        \item Embedding Model: [e.g., BioBERT, PubMedBERT, or domain-specific encoder]
-        \item Vector Store: [e.g., FAISS, Pinecone, ChromaDB]
-        \item Retrieval Strategy: [e.g., dense retrieval, hybrid (dense + sparse)]
-        \item Top-K Selection: [e.g., retrieve top 5-10 most relevant chunks]
-    \end{itemize}
-    
-    \item \textbf{Ranker Component (Optional):}
-    \begin{itemize}
-        \item Re-ranking Model: [e.g., cross-encoder for relevance scoring]
-        \item Purpose: Refine retrieval results for higher precision
-    \end{itemize}
-    
-    \item \textbf{Generator Component:}
-    \begin{itemize}
-        \item Base LMM: [e.g., GPT-4V, LLaVA, Gemini, Claude]
-        \item Context Window: [e.g., 32K tokens]
-        \item Input Format: Retrieved context + patient data + images
-    \end{itemize}
-\end{enumerate}
+% TODO: Describe retriever, ranker, and generator components
+% TODO: Specify embedding models, vector stores, and base LMMs
 
 \paragraph{RAG Implementation Pipeline}
 \begin{enumerate}

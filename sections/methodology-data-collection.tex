@@ -3,100 +3,12 @@
 \label{sec:data-collection}
 
 \subsubsection{Data Sources}
-% Describe all data sources used in your project
-% Be specific about where each type of data comes from
-
-Our multimodal dataset was assembled from multiple authoritative sources to ensure comprehensive coverage of tropical and infectious disease cases:
-
-\begin{itemize}
-    \item \textbf{Medical Textbooks:} Standard references including Harrison's Principles of Internal Medicine, tropical disease handbooks, and WHO guidelines
-    % List specific textbooks used
-    
-    \item \textbf{Scientific Literature:} Peer-reviewed articles from PubMed, medical journals focusing on tropical medicine and infectious diseases
-    % Specify journals and search criteria
-    
-    \item \textbf{Clinical Databases:} 
-    \begin{itemize}
-        \item MIMIC-III/MIMIC-IV for electronic health records
-        \item [Specify other clinical databases used]
-    \end{itemize}
-    
-    \item \textbf{Medical Image Repositories:}
-    \begin{itemize}
-        \item [Specify imaging datasets - e.g., ChestX-ray14, etc.]
-        \item [Include modalities: X-ray, CT, MRI, microscopy]
-    \end{itemize}
-    
-    \item \textbf{Open Medical Datasets:}
-    \begin{itemize}
-        \item HuggingFace medical datasets: [List specific datasets]
-        \item Kaggle medical competitions: [List relevant datasets]
-        \item [Other sources]
-    \end{itemize}
-\end{itemize}
-
-% Add table summarizing data sources
-\begin{table}[htbp]
-\caption{Overview of Data Sources}
-\label{tab:data-sources}
-\centering
-\begin{tabular}{lll}
-\hline
-\textbf{Source Type} & \textbf{Modality} & \textbf{Volume} \\
-\hline
-Medical Textbooks & Text & [X chapters/pages] \\
-Clinical Articles & Text & [Y articles] \\
-EHR Database & Text + Structured & [Z records] \\
-Medical Images & Images & [W images] \\
-HuggingFace & Mixed & [V samples] \\
-\hline
-\end{tabular}
-\end{table}
-
+% TODO: Describe all data sources used in your project
+% TODO: List medical textbooks, scientific literature, clinical databases
+% TODO: Specify medical image repositories and open medical datasets
+% TODO: Add table summarizing data sources with volumes
 
 \subsubsection{Data Splits Strategy}
-% Explain how you split the data for different purposes
-
-The collected data was strategically partitioned to support three distinct use cases:
-
-\begin{enumerate}
-    \item \textbf{RAG Knowledge Base:} 
-    \begin{itemize}
-        \item Purpose: External knowledge retrieval for augmented generation
-        \item Composition: Medical textbooks, clinical guidelines, disease references, diagnostic criteria
-        \item Size: [Specify size/percentage]
-        \item Format: Chunked text with metadata (disease category, source, etc.)
-    \end{itemize}
-    
-    \item \textbf{Fine-tuning Dataset:}
-    \begin{itemize}
-        \item Purpose: Model adaptation and domain-specific training
-        \item Composition: Labeled clinical cases with multimodal inputs and diagnostic outputs
-        \item Size: [Specify size/percentage]
-        \item Format: Input-output pairs for supervised learning
-    \end{itemize}
-    
-    \item \textbf{Test Dataset:}
-    \begin{itemize}
-        \item Purpose: Independent evaluation and performance assessment
-        \item Composition: Held-out clinical cases unseen during training
-        \item Size: [Specify size/percentage]
-        \item Stratification: Balanced across disease categories and severity levels
-    \end{itemize}
-\end{enumerate}
-
-% Add specific percentages based on your actual split
-The data partition ratios were determined based on the following considerations:
-\begin{itemize}
-    \item RAG Knowledge Base: Does not require train/test separation; includes comprehensive reference material
-    \item Fine-tuning Split: [e.g., 80\% train, 20\% validation] OR [e.g., 90\% train, 5\% validation, 5\% test]
-    \item Test Set: Completely separate from training data to ensure unbiased evaluation
-\end{itemize}
-
-% Optional: Add figure showing data split visualization
-% \begin{figure}[htbp]
-%   \centering
-%   \includegraphics[width=0.8\linewidth]{figures/data-splits}
-%   \caption{Data split strategy for RAG, fine-tuning, and testing}
-%   \label{fig:data-splits}
-% \end{figure}
+% TODO: Explain how you split the data for RAG, fine-tuning, and testing
+% TODO: Specify partition ratios and stratification strategy
+% TODO: Add figure showing data split visualization
