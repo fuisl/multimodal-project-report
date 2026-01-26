@@ -8,27 +8,39 @@
 
 We collect our data from various authoritative and reputable sources to ensure the factual correctness of our model,
 among which are textbooks, journals, and fact-sheets from worldwide institution.
+
+For textbooks, we collect top-tier ones in the field, including 
+\textit{Manson's Tropical Infectious Diseases} (23rd edition)~\cite{farrar2014manson}, 
+\textit{Manson's Tropical Diseases} (24th edition)~\cite{farrar2023manson},
+\textit{Tropical and Parasitic Infections in the Intensive Care Unit}~\cite{feldman2005tropical} 
+(as part of the Perspectives on Critical Care Infectious Diseases Series),
+and \textit{Current Topics in Tropical Medicine}~\cite{rodriguez2012current}. 
+We also crawl the fact-sheets from \ac{WHO}'s official website. 
+For the QA-set, we utilize the medbullet_op5 set from LangAGI-Lab on HuggingFace and 
+we synthesize another set based on 93 clinical case reports provided by the lecturer and 
+80 open-access case reports from the \ac{AJTMH}.
+The data sources in our collection are summarized in Table~\ref{tab:data-sources-type} and Table~\ref{tab:data-sources}.
+
 Specifically, we collect textbooks and fact-sheets to build the knowledge base for \ac{RAG}, while for instruction fine-tuning,
 we utilize the multi-modal \ac{CoT} reasoning QA-set from LangAGI-Lab, which contains sampled questions from \ac{USMLE}, 
 a well-known medical licensing examination in the United States. Finally, for benchmarking, 
 we synthesize a QA-set from 93 clinical case reports provided by the lecturer and 80 open-access case reports from the \ac{AJTMH}. 
-The data sources in our collection are summarized in Table~\ref{tab:data-sources-type} and Table~\ref{tab:data-sources}.
 
 % Add table summarizing data sources
 \begin{table}[htbp]
 \centering
-\begin{tabular}{lll}
+\begin{tabular}{ll}
 \hline
-\textbf{Name} & \textbf{Source Type} & \textbf{Volume} \\
+\textbf{Name} & \textbf{Volume} \\
 \hline
-Manson's Tropical Infectious Diseases (23rd Edition) & Textbook & 80 chapters - 1655 pages \\
-Manson's Tropical Diseases (24th Edition) & Textbook & 84 chapters - 1634 pages \\
-Tropical and Parasitic Infections in the Intensive Care Unit & Textbook & 12 chapters - 247 pages \\
-Current Topics in Tropical Medicine & Textbook & 29 chapters - 578 pages \\
-WHO & Fact-sheet & 50 sheets \\
-LangAGI-Lab & QA-set & 160 pairs \\
-Moodle & Case Report & 93 articles \\
-\acs{AJTMH} & Case Report & 80 articles \\
+Manson's Tropical Infectious Diseases (23rd Edition) & 80 chapters - 1655 pages \\
+Manson's Tropical Diseases (24th Edition) & 84 chapters - 1634 pages \\
+Tropical and Parasitic Infections in the ICU & 12 chapters - 247 pages \\
+Current Topics in Tropical Medicine & 29 chapters - 578 pages \\
+WHO & 50 fact-sheets \\
+LangAGI-Lab & 160 QA pairs \\
+Moodle & 93 case reports \\
+\acs{AJTMH} & 80 case reports \\
 \hline
 \end{tabular}
 \caption{Overview of Data Sources}
