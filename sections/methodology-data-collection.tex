@@ -6,51 +6,49 @@
 % Describe all data sources used in your project
 % Be specific about where each type of data comes from
 
-Our multimodal dataset was assembled from multiple authoritative sources to ensure comprehensive coverage of tropical and infectious disease cases:
-
-\begin{itemize}
-    \item \textbf{Medical Textbooks:} Standard references including Harrison's Principles of Internal Medicine, tropical disease handbooks, and WHO guidelines
-    % List specific textbooks used
-    
-    \item \textbf{Scientific Literature:} Peer-reviewed articles from PubMed, medical journals focusing on tropical medicine and infectious diseases
-    % Specify journals and search criteria
-    
-    \item \textbf{Clinical Databases:} 
-    \begin{itemize}
-        \item MIMIC-III/MIMIC-IV for electronic health records
-        \item [Specify other clinical databases used]
-    \end{itemize}
-    
-    \item \textbf{Medical Image Repositories:}
-    \begin{itemize}
-        \item [Specify imaging datasets - e.g., ChestX-ray14, etc.]
-        \item [Include modalities: X-ray, CT, MRI, microscopy]
-    \end{itemize}
-    
-    \item \textbf{Open Medical Datasets:}
-    \begin{itemize}
-        \item HuggingFace medical datasets: [List specific datasets]
-        \item Kaggle medical competitions: [List relevant datasets]
-        \item [Other sources]
-    \end{itemize}
-\end{itemize}
+We collect our data from various authoritative and reputable sources to ensure the factual correctness of our model,
+among which are textbooks, journals, and fact-sheets from worldwide institution.
+Specifically, we collect textbooks and fact-sheets to build the knowledge base for \ac{RAG}, while for instruction fine-tuning,
+we utilize the multi-modal \ac{CoT} reasoning QA-set from LangAGI-Lab, which contains sampled questions from \ac{USMLE}, 
+a well-known medical licensing examination in the United States. Finally, for benchmarking, 
+we synthesize a QA-set from 93 clinical case reports provided by the lecturer and 80 open-access case reports from the \ac{AJTMH}. 
+The data sources in our collection are summarized in Table~\ref{tab:data-sources-type} and Table~\ref{tab:data-sources}.
 
 % Add table summarizing data sources
 \begin{table}[htbp]
-\caption{Overview of Data Sources}
-\label{tab:data-sources}
 \centering
 \begin{tabular}{lll}
 \hline
-\textbf{Source Type} & \textbf{Modality} & \textbf{Volume} \\
+\textbf{Name} & \textbf{Source Type} & \textbf{Volume} \\
 \hline
-Medical Textbooks & Text & [X chapters/pages] \\
-Clinical Articles & Text & [Y articles] \\
-EHR Database & Text + Structured & [Z records] \\
-Medical Images & Images & [W images] \\
-HuggingFace & Mixed & [V samples] \\
+Manson's Tropical Infectious Diseases (23rd Edition) & Textbook & 80 chapters - 1655 pages \\
+Manson's Tropical Diseases (24th Edition) & Textbook & 84 chapters - 1634 pages \\
+Tropical and Parasitic Infections in the Intensive Care Unit & Textbook & 12 chapters - 247 pages \\
+Current Topics in Tropical Medicine & Textbook & 29 chapters - 578 pages \\
+WHO & Fact-sheet & 50 sheets \\
+LangAGI-Lab & QA-set & 160 pairs \\
+Moodle & Case Report & 93 articles \\
+\acs{AJTMH} & Case Report & 80 articles \\
 \hline
 \end{tabular}
+\caption{Overview of Data Sources}
+\label{tab:data-sources}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Source Type} & \textbf{Modality} \\
+\hline
+Textbook & Text + Images \\
+Case Report & Text + Images \\
+Fact-sheet & Text \\
+QA-set & Text + Images \\
+\hline
+\end{tabular}
+\caption{Overview of Data Sources Type} 
+\label{tab:data-sources-type}
 \end{table}
 
 

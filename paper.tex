@@ -399,6 +399,9 @@
 \usepackage{mwe}
 \usepackage[realmainfile]{currfile}
 \usepackage{tcolorbox}
+
+\usepackage{acronym}
+
 \tcbuselibrary{listings}
 
 %introduce \powerset - hint by http://matheplanet.com/matheplanet/nuke/html/viewtopic.php?topic=136492&post_id=997377
@@ -514,13 +517,15 @@ Ho Chi Minh City, Vietnam\\
 
 \input{sections/problem-statement}
 
+\input{sections/related-work}
+
 \input{sections/methodology}
 
-% \input{sections/related-work}
-
-% \input{sections/latex-hints}
-
 \input{sections/conclusion}
+
+\input{sections/acronym}
+
+\input{sections/appendix}
 
 % regular IEEE prefers the singular form
 \section*{Acknowledgment}
@@ -547,7 +552,6 @@ Identification of funding sources and other support, and thanks to individuals a
 \bibliography{paper}
 
 % Enfore empty line after bibliography
-\ \\
 %
 \noindent
 All links were last followed on October 5, 2020.
