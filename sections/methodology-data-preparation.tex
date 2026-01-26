@@ -2,37 +2,40 @@
 \subsection{Data Preparation}
 \label{sec:data-preparation}
 
-\subsubsection{Data Extraction and Processing}
+\subsubsection{Data Extraction}
 % Describe how you extracted and processed data from each source
 
-The raw data from diverse sources underwent systematic extraction and transformation:
+We extract the data from its origin and form to further process it, as discussed in the next sections. 
+Specifically, we directly download the textbooks from the corresponding official websites or digital libraries,
+as well as the clinical case reports from the journal. 
+For the fact-sheets from \ac{WHO}, we scrape the HTML content using web scraping tools. 
+We obtain the QA-set from HuggingFace. 
 
-\paragraph{Text Data Processing}
-\begin{itemize}
-    \item \textbf{Extraction:} PDF parsing, HTML scraping, database queries
-    \item \textbf{Cleaning:} Remove formatting artifacts, standardize terminology, handle missing values
-    \item \textbf{Structuring:} Extract clinical sections (symptoms, diagnosis, treatment), metadata annotation
-    \item \textbf{Normalization:} Standardize medical terminology using UMLS/SNOMED-CT ontologies
-\end{itemize}
+\subsubsection{Data Processing}
+% Describe the processing steps applied to raw data to prepare it for use
+We preprocess the collected raw data to convert it into structured formats for our downstream use.
+In our case, only the fine-tuning and benchmarking datasets require extensive and systematic processing. 
 
-\paragraph{Image Data Processing}
-\begin{itemize}
-    \item \textbf{Format standardization:} Convert all images to consistent format (PNG/JPEG)
-    \item \textbf{Resolution normalization:} Resize while preserving aspect ratio
-    \item \textbf{Quality control:} Remove corrupted or low-quality images
-    \item \textbf{Augmentation:} [Specify augmentation techniques if used - rotation, flip, brightness, etc.]
-    \item \textbf{Annotation:} Link images to corresponding clinical cases and diagnoses
-\end{itemize}
+\paragraph{Fine-tuning Dataset Processing}
+The dataset we collect from HuggingFace is a mono-modal multiple-choice \ac{CoT} dataset,
+which contains a link to the corresponding question on a community-driven educational platform to prepare for the \ac{USMLE}, 
+as well as the question (the case description or case prompt), the multiple choices and the correct choices,
+and the detailed reasoning for the correct answer. 
+However, as we want our model to handle open-ended questions with a multi-modal input,
+we process the data to convert the question and reasoning to open-ended formats with multi-modal inputs. 
+Specifically, we prompt-engineer based on the original MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}
+prompt to rewrite the question and reasoning into an open-ended format.
+We also convert the pair into multi-modal by crawling the relevant images via the links provided using Firecrawl. 
+Observing that the set has one image per question, we append the encoded image to base64 into an extra column in the dataset.
 
-\paragraph{Structured Data Processing}
-\begin{itemize}
-    \item \textbf{Feature extraction:} Demographics, vital signs, lab results, medical history
-    \item \textbf{Encoding:} Categorical variables, temporal information
-    \item \textbf{Integration:} Merge with text and image data using patient/case identifiers
-\end{itemize}
+\paragraph{Benchmarking Dataset Processing}
+The case reports we collect are mostly in PDF, so firstly we extract it to markdown with MinerU.
+We then filter the image paths, appending them immediately after the mention of the figure in the text. 
+Finally, we pass the text to the prompt-engineering module to convert the case report into a \ac{QA} pair.
+We devise an agentic loop based on MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}
+to iteratively generate the question and reasoning from the case report text.
 
-
-\subsubsection{Pipeline for Each Data Split}
+\subsubsection{Data Pipeline}
 
 \paragraph{RAG Knowledge Base Pipeline}
 \begin{enumerate}
@@ -148,7 +151,7 @@ The raw data from diverse sources underwent systematic extraction and transforma
 Similar to fine-tuning format, with additional ground truth annotations and evaluation metadata.
 
 
-\subsubsection{Data Partition Summary}
+\subsubsection{Data Split}
 
 % Add table with actual numbers
 \begin{table}[htbp]
