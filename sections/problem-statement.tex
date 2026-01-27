@@ -2,70 +2,17 @@
 \section{Problem Statement and Objectives}
 \label{sec:problem-statement}
 
-\subsection{Motivation}
-% Describe the motivation behind the project
-% Why is multimodal learning important for tropical and infectious disease diagnosis?
-% What are the current challenges in clinical decision support systems?
-
 The diagnosis process in the medical context is challenging due to its complexity and variability,
 together with the need for fast but accurate decision. 
-Previous approaches rely heavily on mono-modal data, which is unrealistic and incomplete, given the nature of 
+
+Previous models are trained on mono-modal data, mainly text, which is unrealistic and incomplete, given the nature of 
 diagnostic decision-making process. 
-Furthermore, existing models are trained on knowledge-heavy data~\cite{thapa2025disentanglingreasoningknowledgemedical},
-limiting their reasoning ability, thus undermining their reliability. 
-Therefore, we seek to integrate multi-modal capability into our model, as well as improving its reasoning ability
-for greater interpretability and reliability. 
+Relying solely on text data limits the model's ability to capture the full clinical context, 
+which risk making inaccurate or incomplete diagnoses.
+Furthermore, existing models are benchmarked on knowledge-heavy data~\cite{thapa2025disentanglingreasoningknowledgemedical},
+which contain a major portion of factual information. This benchmarking methods unreliably evaluate the model's reasoning ability. 
 
-% Add your specific motivation based on your project context
-
-
-\subsection{Problem Statement}
-% Clearly define the problem you are addressing
-% What gaps exist in current approaches?
-% What specific challenges do you aim to solve?
-
-Despite advances in medical AI, existing clinical decision support systems face several limitations:
-\begin{itemize}
-    \item \textbf{Limited multimodal integration:} Current systems often process text, images, and structured data separately, missing critical cross-modal relationships
-    \item \textbf{Lack of contextual understanding:} Traditional models struggle to incorporate patient history, clinical guidelines, and domain-specific knowledge effectively
-    \item \textbf{Generalization challenges:} Models trained on limited datasets often fail to generalize across diverse patient populations and disease presentations
-    \item \textbf{Interpretability concerns:} Black-box models provide limited insight into diagnostic reasoning, hindering clinical adoption
-\end{itemize}
-
-% Add specific problems identified in your domain
-
-
-\subsection{Research Objectives}
-% List your main objectives clearly
-% What do you aim to achieve with your system?
-
-This work aims to address these challenges through the following objectives:
-
-\begin{enumerate}
-    \item \textbf{Develop a multimodal diagnostic system} that integrates clinical text, medical images, and structured patient data using large multimodal models (LMMs)
-    
-    \item \textbf{Implement and compare multiple approaches} including Retrieval-Augmented Generation (RAG), model fine-tuning, and hybrid combinations to determine optimal architectures
-    
-    \item \textbf{Establish comprehensive evaluation frameworks} with clinically relevant metrics to assess diagnostic accuracy, reasoning quality, and system reliability
-    
-    \item \textbf{Analyze model performance} across different disease categories and data modalities to identify strengths, limitations, and areas for improvement
-\end{enumerate}
-
-% Customize these objectives based on your specific project goals
-
-
-\subsection{Research Hypothesis}
-% State your hypotheses clearly
-% What do you expect to find or achieve?
-
-We hypothesize that:
-
-\begin{itemize}
-    \item \textbf{H1:} Large multimodal models enhanced with domain-specific retrieval mechanisms (RAG) will outperform standalone fine-tuned models in diagnostic accuracy for rare and complex tropical diseases
-    
-    \item \textbf{H2:} A hybrid approach combining RAG with targeted fine-tuning will achieve superior performance compared to either method alone, particularly in scenarios requiring both broad medical knowledge and disease-specific expertise
-    
-    \item \textbf{H3:} Models trained on diverse multimodal data sources will demonstrate better generalization across different clinical presentation patterns compared to single-modality approaches
-\end{itemize}
-
-% Adjust hypotheses based on your experimental design and expected outcomes
+Therefore, in this work, we seek to improve the model by integrating multi-modal capability, mainly images. 
+We do this via multi-modal fine-tuning.
+We also seek to truely evaluate the model's reasoning ability by constructing a multi-modal reasoning benchmark, 
+following MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}. 
