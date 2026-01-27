@@ -17,8 +17,8 @@ For textbooks, we collect top-tier ones in the field, including
 and \textit{Current Topics in Tropical Medicine}~\cite{rodriguez2012current}. 
 We also crawl the fact-sheets from \ac{WHO}'s official website. 
 For the QA-set, we utilize the medbullet\_op5 set from LangAGI-Lab on HuggingFace, 
-which contains sampled questions from \ac{USMLE}, a well-known medical licensing examination in the United States 
-and we synthesize another set based on 93 clinical case reports provided by the lecturer and 
+which contains sampled questions from \ac{USMLE}, a well-known medical licensing examination in the United States.
+We also synthesize another set based on 93 clinical case reports provided by the lecturer and 
 80 open-access case reports from the \ac{AJTMH}.
 The data sources in our collection are summarized in Table~\ref{tab:data-sources-type} and Table~\ref{tab:data-sources}.
 
@@ -34,7 +34,7 @@ Manson's Tropical Diseases \\ (24th Edition) & 84 chapters - 1634 pages \\
 Tropical and Parasitic Infections \\ in the ICU & 12 chapters - 247 pages \\
 Current Topics in Tropical Medicine & 29 chapters - 578 pages \\
 WHO & 50 fact-sheets \\
-LangAGI-Lab & 160 QA pairs \\
+medbullet\_op5 & 160 QA pairs \\
 Moodle & 93 case reports \\
 \acs{AJTMH} & 80 case reports \\
 \hline
@@ -76,36 +76,11 @@ Our partition is visualized in Figure~\ref{fig:data-splits}.
   \label{fig:data-splits}
 \end{figure}
 
-% \begin{enumerate}
-%     \item \textbf{RAG Knowledge Base:} 
-%     \begin{itemize}
-%         \item Purpose: External knowledge retrieval for augmented generation
-%         \item Composition: Medical textbooks, clinical guidelines, disease references, diagnostic criteria
-%         \item Size: [Specify size/percentage]
-%         \item Format: Chunked text with metadata (disease category, source, etc.)
-%     \end{itemize}
-    
-%     \item \textbf{Fine-tuning Dataset:}
-%     \begin{itemize}
-%         \item Purpose: Model adaptation and domain-specific training
-%         \item Composition: Labeled clinical cases with multimodal inputs and diagnostic outputs
-%         \item Size: [Specify size/percentage]
-%         \item Format: Input-output pairs for supervised learning
-%     \end{itemize}
-    
-%     \item \textbf{Test Dataset:}
-%     \begin{itemize}
-%         \item Purpose: Independent evaluation and performance assessment
-%         \item Composition: Held-out clinical cases unseen during training
-%         \item Size: [Specify size/percentage]
-%         \item Stratification: Balanced across disease categories and severity levels
-%     \end{itemize}
-% \end{enumerate}
+\subsubsection{Data Extraction}
+% Describe how you extracted and processed data from each source
 
-% % Add specific percentages based on your actual split
-% The data partition ratios were determined based on the following considerations:
-% \begin{itemize}
-%     \item RAG Knowledge Base: Does not require train/test separation; includes comprehensive reference material
-%     \item Fine-tuning Split: [e.g., 80\% train, 20\% validation] OR [e.g., 90\% train, 5\% validation, 5\% test]
-%     \item Test Set: Completely separate from training data to ensure unbiased evaluation
-% \end{itemize}
+We extract the data from its origin and form to further process it, as discussed in the next sections. 
+Specifically, we directly download the textbooks from the corresponding official websites or digital libraries,
+as well as the clinical case reports from the journal. 
+For the fact-sheets from \ac{WHO}, we scrape the HTML content using web scraping tools. 
+We obtain the QA-set from HuggingFace. 

@@ -2,15 +2,6 @@
 \subsection{Data Preparation}
 \label{sec:data-preparation}
 
-\subsubsection{Data Extraction}
-% Describe how you extracted and processed data from each source
-
-We extract the data from its origin and form to further process it, as discussed in the next sections. 
-Specifically, we directly download the textbooks from the corresponding official websites or digital libraries,
-as well as the clinical case reports from the journal. 
-For the fact-sheets from \ac{WHO}, we scrape the HTML content using web scraping tools. 
-We obtain the QA-set from HuggingFace. 
-
 \subsubsection{Data Processing}
 % Describe the processing steps applied to raw data to prepare it for use
 We preprocess the collected raw data to convert it into structured formats for our downstream use.
@@ -31,151 +22,19 @@ Observing that the set has one image per question, we append the encoded image t
 \paragraph{Benchmarking Dataset Processing}
 The case reports we collect are mostly in PDF, so firstly we extract it to markdown with MinerU.
 We then filter the image paths, appending them immediately after the mention of the figure in the text. 
-Finally, we pass the text to the prompt-engineering module to convert the case report into a \ac{QA} pair.
-We devise an agentic loop based on MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}
-to iteratively generate the question and reasoning from the case report text.
+Finally, we prompt-engineer based on the original MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic} and
+build a simple agentic loop with LangGraph to iteratively generate the question and reasoning from the case report text using
+\text{gemma-3-27b-it}. 
 
-\subsubsection{Data Pipeline}
+The loop is a simple state-machine process, with actions bound with the states, as shown in Figure~\ref{fig:agentic_loop_graph}. The loop contains two decision nodes, 
+one to decide whether to process the case after evaluation, and one to decide whether to retry the case if the processing is problematic.
 
-\paragraph{RAG Knowledge Base Pipeline}
-\begin{enumerate}
-    \item \textbf{Document Chunking:} 
-    \begin{itemize}
-        \item Strategy: [e.g., sentence-based, paragraph-based, fixed token size]
-        \item Chunk size: [e.g., 512 tokens with 50 token overlap]
-        \item Preservation: Maintain context and semantic coherence
-    \end{itemize}
-    
-    \item \textbf{Embedding Generation:}
-    \begin{itemize}
-        \item Model: [e.g., BioBERT, PubMedBERT, sentence-transformers]
-        \item Dimension: [e.g., 768-dimensional embeddings]
-        \item Storage: Vector database [e.g., FAISS, Pinecone, Chroma]
-    \end{itemize}
-    
-    \item \textbf{Metadata Enrichment:}
-    \begin{itemize}
-        \item Add disease categories, source information, date, relevance scores
-        \item Enable filtering during retrieval
-    \end{itemize}
-    
-    \item \textbf{Index Construction:}
-    \begin{itemize}
-        \item Build efficient similarity search index
-        \item Optimize for low-latency retrieval
-    \end{itemize}
-\end{enumerate}
-
-\paragraph{Fine-tuning Dataset Pipeline}
-\begin{enumerate}
-    \item \textbf{Case Selection:}
-    \begin{itemize}
-        \item Filter for complete cases with diagnosis labels
-        \item Ensure disease category diversity and balance
-    \end{itemize}
-    
-    \item \textbf{Input Formatting:}
-    \begin{itemize}
-        \item Template: \texttt{[Clinical History] + [Symptoms] + [Images] + [Lab Results]}
-        \item Multimodal fusion: Combine text and image inputs
-        \item Tokenization: Apply model-specific tokenization
-    \end{itemize}
-    
-    \item \textbf{Label Preparation:}
-    \begin{itemize}
-        \item Format: [e.g., diagnosis name, ICD codes, confidence scores]
-        \item Multi-label handling: Support multiple diagnoses per case
-    \end{itemize}
-    
-    \item \textbf{Quality Assurance:}
-    \begin{itemize}
-        \item Verify label accuracy
-        \item Remove ambiguous or incomplete cases
-        \item Expert validation: [Specify if clinical expert reviewed data]
-    \end{itemize}
-\end{enumerate}
-
-\paragraph{Test Dataset Pipeline}
-\begin{enumerate}
-    \item \textbf{Stratified Sampling:}
-    \begin{itemize}
-        \item Ensure representation across disease categories
-        \item Balance difficulty levels and rare diseases
-    \end{itemize}
-    
-    \item \textbf{Format Consistency:}
-    \begin{itemize}
-        \item Apply same preprocessing as training data
-        \item Maintain multimodal structure
-    \end{itemize}
-    
-    \item \textbf{Ground Truth Verification:}
-    \begin{itemize}
-        \item Validate diagnosis labels
-        \item Document diagnostic rationale for interpretation
-    \end{itemize}
-\end{enumerate}
-
-
-\subsubsection{Format Requirements}
-
-\paragraph{RAG Format}
-\begin{verbatim}
-{
-  "chunk_id": "uuid",
-  "text": "clinical content...",
-  "disease": "disease_name",
-  "source": "textbook/article/guideline",
-  "embedding": [vector],
-  "metadata": {...}
-}
-\end{verbatim}
-
-\paragraph{Fine-tuning Format}
-\begin{verbatim}
-{
-  "input": {
-    "text": "Patient presentation...",
-    "image_paths": ["path1.jpg", ...],
-    "structured": {demographics, vitals, labs}
-  },
-  "output": {
-    "diagnosis": "disease_name",
-    "confidence": 0.95,
-    "reasoning": "diagnostic rationale..."
-  }
-}
-\end{verbatim}
-
-\paragraph{Test Format}
-Similar to fine-tuning format, with additional ground truth annotations and evaluation metadata.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=0.8\linewidth]{figures/graph.png}
+  \caption{Data Extraction Graph}
+  \label{fig:agentic_loop_graph}
+\end{figure}
 
 
 \subsubsection{Data Split}
-
-% Add table with actual numbers
-\begin{table}[htbp]
-\caption{Data Partition Details}
-\label{tab:data-partition}
-\centering
-\begin{tabular}{llll}
-\hline
-\textbf{Split} & \textbf{Purpose} & \textbf{Size} & \textbf{Ratio} \\
-\hline
-RAG KB & Retrieval & [X samples] & N/A \\
-Train & Fine-tuning & [Y samples] & [e.g., 80\%] \\
-Validation & Hyperparameter tuning & [Z samples] & [e.g., 10\%] \\
-Test & Evaluation & [W samples] & [e.g., 10\%] \\
-\hline
-\textbf{Total} & & [Total] & 100\% \\
-\hline
-\end{tabular}
-\end{table}
-
-% Describe your actual partition strategy
-\begin{itemize}
-    \item \textbf{Partition Strategy:} [e.g., 80-10-10 split for fine-tuning data]
-    \item \textbf{Stratification:} Maintained disease category proportions across splits
-    \item \textbf{Temporal Split:} [If applicable - e.g., earlier cases for training, recent for testing]
-    \item \textbf{No Data Leakage:} Ensured patient-level separation between train/test
-\end{itemize}
