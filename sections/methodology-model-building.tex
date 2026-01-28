@@ -2,54 +2,38 @@
 \subsection{Model Building and Training}
 \label{sec:model-building}
 
-% TODO: Implement and describe three approaches: RAG, fine-tuning, and hybrid
+We implemented and evaluated three distinct approaches: \ac{RAG}, model
+fine-tuning, and a hybrid combination. This section details the architecture, training pipeline, and technical implementation of each method
 
-\subsubsection{RAG (Retrieval-Augmented Generation) Pipeline}
+\subsubsection{\ac{RAG}}
 \label{sec:rag-pipeline}
 
 \paragraph{Architecture Overview}
-% TODO: Describe retriever, ranker, and generator components
-% TODO: Specify embedding models, vector stores, and base LMMs
+
+\ac{RAG} is essential in medical applications because it enables dynamic updates to medical knowledge bases without requiring model retraining, which is particularly important given the continuously evolving nature of medical information. \ac{RAG} systems, including LightRAG, can ingest diverse medical data sources such as textbooks, case reports, and fact sheets, and store them in a database. When a query is given, the system retrieves relevant information from the knowledge base.
+
+Unlike conventional RAG pipelines that primarily rely on vector similarity search, LightRAG has a graph-based approach. In LightRAG, entities represent meaningful medical concepts (e.g., diseases, symptoms, or drugs), while relationships capture the semantic connections between these entities (e.g., causes, treats, or associated with). By extracting entities and their relationships, LightRAG is able to retrieve more relevant information and uncover deeper contextual connections within the data.
 
 \paragraph{RAG Implementation Pipeline}
-\begin{enumerate}
-    \item \textbf{Query Processing:}
-    \begin{itemize}
-        \item Extract key medical terms from patient presentation
-        \item Generate query embeddings using retriever model
-    \end{itemize}
-    
-    \item \textbf{Retrieval Phase:}
-    \begin{itemize}
-        \item Similarity search in vector database
-        \item Retrieve top-K relevant medical knowledge chunks
-        \item Apply metadata filtering (disease category, source credibility)
-    \end{itemize}
-    
-    \item \textbf{Context Construction:}
-    \begin{itemize}
-        \item Combine retrieved knowledge with patient data
-        \item Format multimodal inputs (text + images)
-        \item Construct prompt template with clinical reasoning instructions
-    \end{itemize}
-    
-    \item \textbf{Generation Phase:}
-    \begin{itemize}
-        \item Feed enriched context to LMM
-        \item Generate diagnostic predictions with reasoning
-        \item Post-process outputs for structured format
-    \end{itemize}
+
+In a general RAG system, there are three distinct phases that define its operation: the data ingestion phase, the retrieval phase, and the generation phase. However, in our system, along side with LightRAG, we already have an \ac{MLLM} model available and want to retain control over context engineering. Therefore, in this work, we omit the final generation phase of LightRAG and focus solely on the first two phases.
+
+\begin{enumerate}[label=\roman*.]
+    \item Data ingestion phase: As illustrated in Fig.~\ref{fig:data-ingestion}, uploaded data sources are first processed according to their modality, specifically separating text and image inputs. Text-only documents are supported by default and therefore require no additional preprocessing. For images, we use an adapter from GraphRAG pipeline to generate textual descriptions that map each image to a corresponding text representation. All textual content is then aggregated and segmented into appropriately sized chunks. For each data chunk, an \ac{LLM} is invoked to extract entities and relationships and the knowledge graph is gradually formulated. The extracted entities and relationships are subsequently deduplicated to eliminate redundancy and stored in two databases: a vector database that holds embedded metadata, and a key–value database that holds the mappings among entities, relationships, and data chunks.
+    \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/RAG_Data_Ingestion_Flow.png}
+    \caption{Overview of data ingestion process}
+    \label{fig:data-ingestion}
+    \end{figure}
+    \item Retrieval phase: As illustrated in Fig.~\ref{fig:retrieval}, when a user query is given, the retrieval process operates simultaneously in three modes. In the Naive mode, vector similarity is computed directly between the embedded user query and embedded data chunks to retrieve the most similar chunks. In the Local and Global modes, embeddings of entities and relationships are compared with the embedded user query, after which the most similar entities and relationships are mapped to their corresponding data chunks. Finally, data chunks retrieved from all three modes are aggregated and reranked based on their relevance to the query before being returned.
+    \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/RAG_Retrieval_Flow.png}
+    \caption{Overview of retrieval process}
+    \label{fig:retrieval}
+    \end{figure}
 \end{enumerate}
-
-\paragraph{RAG Configuration}
-\begin{itemize}
-    \item Chunk Size: [e.g., 512 tokens]
-    \item Overlap: [e.g., 50 tokens]
-    \item Top-K: [e.g., 5 documents]
-    \item Similarity Metric: [e.g., cosine similarity]
-    \item Temperature: [e.g., 0.3 for diagnostic tasks]
-\end{itemize}
-
 
 \subsubsection{Fine-tuning Pipeline}
 \label{sec:finetuning-pipeline}

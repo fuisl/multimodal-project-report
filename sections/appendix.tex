@@ -16,10 +16,13 @@ Our task allocations are summarized in Table~\ref{tab:task-allocations}.
 \hline
 \textbf{Member} & \textbf{Task} & \textbf{Team} \\
 \hline
-Duong   & Building RAG knowledge base & AI \\
-        & Fine-tuning Model &  \\
+Duong   & Build RAG knowledge base & AI \\
+        & Fine-tune model &  \\
+        & Combine methods &  \\
 
-Minh    & Evaluate Model & AI \\
+Minh    & Evaluate model & AI \\
+        & Interpret result &  \\
+        & Combine methods &  \\
 
 Phuc    & Synthesize benchmark & Data \\
         & Prepare fine-tuning data &  \\ 
@@ -31,8 +34,18 @@ Xuan & Extract PDF to markdown & Data \\
 \label{tab:task-allocations}
 \end{table}
 
+\subsection{Knowledge Graph}
+LightRAG provides a built-in user interface that offers an overview of the entire knowledge graph. When hovering over a node, detailed information is displayed, including the node’s identifier, label, degree (i.e., the number of neighboring nodes), properties, and associated relationships. An overview of the knowledge graph along with a sample node is illustrated in Fig.~\ref{fig:knowledge-graph}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/RAG_Knowledge_graph.png}
+\caption{Overview of the knowledge graph and a sample node}
+\label{fig:knowledge-graph}
+\end{figure}
+
+
 \subsection{Data Samples}
-We showcase samples from our dataset. 
+We showcase samples from our fine-tuning dataset. 
 
 \begin{figure}[htbp]
   \centering
