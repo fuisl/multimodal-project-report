@@ -1,3 +1,67 @@
 \section{Appendix}
 \label{sec:appendix}
 \input{sections/appendix-data.tex}
+
+\subsection{Task Allocations}
+We divide our group into two teams, the AI team and Data team, and allocate the tasks to each group accordingly. 
+The individual group will decide on further task allocations within itself. 
+For the AI team, Duong is responsible for the model building and training, 
+while Minh focuses on model evaluation.
+Meanwhile, the Data team discharges its tasks collaboratively, 
+with both members contributing to different aspects of data collection and preprocessing, 
+often overlapping each other. 
+Our task allocations are summarized in Table~\ref{tab:task-allocations}.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lll}
+\hline
+\textbf{Member} & \textbf{Task} & \textbf{Team} \\
+\hline
+Duong   & Building RAG knowledge base & AI \\
+        & Fine-tuning Model &  \\
+
+Minh    & Evaluate Model & AI \\
+
+Phuc    & Synthesize benchmark & Data \\
+        & Prepare fine-tuning data &  \\ 
+
+Xuan & Extract PDF to markdown & Data \\
+\hline
+\end{tabular}
+\caption{Task Allocations of Group Members} 
+\label{tab:task-allocations}
+\end{table}
+
+\subsection{Data Samples}
+We showcase samples from our dataset. 
+
+We here display a sample \ac{QA} pair with reasoning from the fine-tuning dataset, via screenshot of the web. 
+As can be seen here, the reasoning is eliminative, being strictly for multiple-choice format. 
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/medbullet_qa_image.png}
+  \caption{Question-Answer pair with image from medbullet\_op5 dataset}
+  \label{fig:medbullet-qa-image}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/medbullet_reasoning.png}
+  \caption{Reasoning from medbullet\_op5 dataset}
+  \label{fig:medbullet-reasoning}
+\end{figure}
+
+We also show a sample from our benchmark dataset in JSON format below.
+
+\begin{lstlisting}[language=json]
+  {
+    "source":"case_28",
+    "case_prompt":"A 67-year-old German woman, who has lived as an expatriate in Cameroon for the past 4 years, presents with palpitations at a tropical medicine clinic in Germany. She also reports transient subcutaneous swellings for the past year. There is no history of fever or constitutional symptoms, and the past medical history is otherwise unremarkable. A 24-hour ECG recording was done elsewhere, which showed paroxysmal supraventricular extrasystoles. Echocardiography revealed a minimal pericardial effusion. On examination, vital signs are normal, and the patient is afebrile. There are no visible subcutaneous swellings. Heart sounds are clear and regular, with no murmurs. No pathological findings are noted on physical examination. Laboratory results show a WBC count of 6.20 x10^9\/L, hemoglobin of 13.8 g\/dL, platelets of 155 x10^9\/L, neutrophils of 45%, eosinophils of 14%, absolute eosinophil count of 0.868 x10^9\/L, band neutrophils of 1%, lymphocytes of 36%, monocytes of 4%, and basophils of 0%. The chest radiograph does not show any abnormalities (Table 28.1, Fig 28.1).\n\nWhat are your differential diagnoses?",
+    "final_diagnosis":"Loiasis",
+    "reasoning_points":"1. The patient's history of living in an endemic area (Cameroon) for 4 years is a critical factor. \"The pattern of transient subcutaneous swellings, eosinophilia and the history of living in Cameroon for several years are the key pieces of clinical information suggestive of a filarial infection.\"\n2. The presence of eosinophilia (14% eosinophils, absolute eosinophil count 0.868 x10^9\/L) strongly suggests a parasitic infection or allergic reaction. \"Some filarial infections may affect the heart, and chronic eosinophilia is known to be cardiotoxic and may cause endomyocardial fibrosis.\"\n3. The transient subcutaneous swellings are a characteristic symptom of certain filarial infections, particularly loiasis. \"Migration may cause urticaria and transient painless subcutaneous swellings ('Calabar swellings'), a localized angioedema which may last from several hours to a few days.\"\n4. The cardiac findings (palpitations, paroxysmal supraventricular extrasystoles, minimal pericardial effusion) raise the possibility of cardiac involvement by a parasitic infection. \"The cardiac findings in this patient, however, may warrant further work-up.\"",
+    "reasoning_narrative":"The diagnostic process begins with recognizing the patient's travel history to Cameroon, an endemic area for several parasitic infections. The key finding of eosinophilia, coupled with transient subcutaneous swellings, immediately points towards a parasitic etiology. Considering the patient's location, filarial infections become a primary concern. The cardiac symptoms, while potentially unrelated, necessitate investigation for possible parasitic involvement of the heart. The differential diagnosis must include various filarial infections known to cause these symptoms, such as loiasis, lymphatic filariasis, and other less common parasitic diseases. Further investigations, such as microscopic examination of blood samples for microfilariae, are crucial to confirm the diagnosis and identify the specific parasite involved.",
+    "flagged":"No"
+  }
+\end{lstlisting}
