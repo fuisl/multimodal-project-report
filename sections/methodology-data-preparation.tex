@@ -2,152 +2,53 @@
 \subsection{Data Preparation}
 \label{sec:data-preparation}
 
-\subsubsection{Data Extraction and Processing}
-% TODO: Describe extraction and processing for text, image, and structured data
-% TODO: Detail cleaning, normalization, and quality control procedures
+\subsubsection{Data Processing}
+% Describe the processing steps applied to raw data to prepare it for use
+We preprocess the collected raw data to convert it into structured formats for our downstream use.
+In our case, only the fine-tuning and benchmarking datasets require extensive and systematic processing. 
+Our processing steps for each dataset are shown in Figure~\ref{fig:data-processing}.
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/data_processing.png}
+  \caption{Data Processing for Different Sets}
+  \label{fig:data-processing}
+\end{figure}
 
-\subsubsection{Pipeline for Each Data Split}
+\paragraph{Fine-tuning Dataset Processing}
+The dataset we collect from HuggingFace is a mono-modal multiple-choice \ac{CoT} dataset 
+(as shown in Figure~\ref{fig:medbullet-qa-image} and Figure~\ref{fig:medbullet-reasoning}),
+which contains a link to the corresponding question on a community-driven educational platform to prepare for the \ac{USMLE}, 
+as well as the question (the case description or case prompt), the multiple choices and the correct choices,
+and the detailed reasoning for the correct answer. 
+However, as we want our model to handle open-ended questions with a multi-modal input,
+we process the data to convert the question and reasoning to open-ended formats with multi-modal inputs. 
+Specifically, we prompt-engineer based on the original MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}
+prompt to rewrite the question and reasoning into an open-ended format.
+We also convert the pair into multi-modal by crawling the relevant images via the links provided using Firecrawl. 
+Observing that the set has one image per question, we append the encoded image to base64 into an extra column in the dataset.
 
-\paragraph{RAG Knowledge Base Pipeline}
-\begin{enumerate}
-    \item \textbf{Document Chunking:} 
-    \begin{itemize}
-        \item Strategy: [e.g., sentence-based, paragraph-based, fixed token size]
-        \item Chunk size: [e.g., 512 tokens with 50 token overlap]
-        \item Preservation: Maintain context and semantic coherence
-    \end{itemize}
-    
-    \item \textbf{Embedding Generation:}
-    \begin{itemize}
-        \item Model: [e.g., BioBERT, PubMedBERT, sentence-transformers]
-        \item Dimension: [e.g., 768-dimensional embeddings]
-        \item Storage: Vector database [e.g., FAISS, Pinecone, Chroma]
-    \end{itemize}
-    
-    \item \textbf{Metadata Enrichment:}
-    \begin{itemize}
-        \item Add disease categories, source information, date, relevance scores
-        \item Enable filtering during retrieval
-    \end{itemize}
-    
-    \item \textbf{Index Construction:}
-    \begin{itemize}
-        \item Build efficient similarity search index
-        \item Optimize for low-latency retrieval
-    \end{itemize}
-\end{enumerate}
+\paragraph{Benchmarking Dataset Processing}
+The case reports we collect are mostly in PDF, so firstly we extract it to markdown with MinerU.
+We then filter the image paths, appending them immediately after the mention of the figure in the text. 
+This is because MinerU extracts based on layout, so the image paths are mixed in other parts.
+Finally, we prompt-engineer based on the original MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}
+to handle multi-modal data, specifically the images, since the original prompt deliberately omits other data modalities than text.
+Besides that, we also customize a new prompt for the model to regenerate the question and reasoning, 
+if the auditing raises any issues. Finally, we devise the synthesizing pipeline and build a simple agentic loop with LangGraph 
+to iteratively generate the question and reasoning from the case report text using \text{gemma-3-27b-it}. 
 
-\paragraph{Fine-tuning Dataset Pipeline}
-\begin{enumerate}
-    \item \textbf{Case Selection:}
-    \begin{itemize}
-        \item Filter for complete cases with diagnosis labels
-        \item Ensure disease category diversity and balance
-    \end{itemize}
-    
-    \item \textbf{Input Formatting:}
-    \begin{itemize}
-        \item Template: \texttt{[Clinical History] + [Symptoms] + [Images] + [Lab Results]}
-        \item Multimodal fusion: Combine text and image inputs
-        \item Tokenization: Apply model-specific tokenization
-    \end{itemize}
-    
-    \item \textbf{Label Preparation:}
-    \begin{itemize}
-        \item Format: [e.g., diagnosis name, ICD codes, confidence scores]
-        \item Multi-label handling: Support multiple diagnoses per case
-    \end{itemize}
-    
-    \item \textbf{Quality Assurance:}
-    \begin{itemize}
-        \item Verify label accuracy
-        \item Remove ambiguous or incomplete cases
-        \item Expert validation: [Specify if clinical expert reviewed data]
-    \end{itemize}
-\end{enumerate}
+The loop is a simple state-machine process, with actions bound with the states, as shown in Figure~\ref{fig:agentic_loop_graph}. 
+The loop contains two decision nodes, one to decide whether to process the case after evaluation, 
+and one to decide whether to retry the case at the end. 
 
-\paragraph{Test Dataset Pipeline}
-\begin{enumerate}
-    \item \textbf{Stratified Sampling:}
-    \begin{itemize}
-        \item Ensure representation across disease categories
-        \item Balance difficulty levels and rare diseases
-    \end{itemize}
-    
-    \item \textbf{Format Consistency:}
-    \begin{itemize}
-        \item Apply same preprocessing as training data
-        \item Maintain multimodal structure
-    \end{itemize}
-    
-    \item \textbf{Ground Truth Verification:}
-    \begin{itemize}
-        \item Validate diagnosis labels
-        \item Document diagnostic rationale for interpretation
-    \end{itemize}
-\end{enumerate}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=0.8\linewidth]{figures/graph.png}
+  \caption{Data Extraction Graph}
+  \label{fig:agentic_loop_graph}
+\end{figure}
 
-
-\subsubsection{Format Requirements}
-
-\paragraph{RAG Format}
-\begin{verbatim}
-{
-  "chunk_id": "uuid",
-  "text": "clinical content...",
-  "disease": "disease_name",
-  "source": "textbook/article/guideline",
-  "embedding": [vector],
-  "metadata": {...}
-}
-\end{verbatim}
-
-\paragraph{Fine-tuning Format}
-\begin{verbatim}
-{
-  "input": {
-    "text": "Patient presentation...",
-    "image_paths": ["path1.jpg", ...],
-    "structured": {demographics, vitals, labs}
-  },
-  "output": {
-    "diagnosis": "disease_name",
-    "confidence": 0.95,
-    "reasoning": "diagnostic rationale..."
-  }
-}
-\end{verbatim}
-
-\paragraph{Test Format}
-Similar to fine-tuning format, with additional ground truth annotations and evaluation metadata.
-
-
-\subsubsection{Data Partition Summary}
-
-% Add table with actual numbers
-\begin{table}[htbp]
-\caption{Data Partition Details}
-\label{tab:data-partition}
-\centering
-\begin{tabular}{llll}
-\hline
-\textbf{Split} & \textbf{Purpose} & \textbf{Size} & \textbf{Ratio} \\
-\hline
-RAG KB & Retrieval & [X samples] & N/A \\
-Train & Fine-tuning & [Y samples] & [e.g., 80\%] \\
-Validation & Hyperparameter tuning & [Z samples] & [e.g., 10\%] \\
-Test & Evaluation & [W samples] & [e.g., 10\%] \\
-\hline
-\textbf{Total} & & [Total] & 100\% \\
-\hline
-\end{tabular}
-\end{table}
-
-% Describe your actual partition strategy
-\begin{itemize}
-    \item \textbf{Partition Strategy:} [e.g., 80-10-10 split for fine-tuning data]
-    \item \textbf{Stratification:} Maintained disease category proportions across splits
-    \item \textbf{Temporal Split:} [If applicable - e.g., earlier cases for training, recent for testing]
-    \item \textbf{No Data Leakage:} Ensured patient-level separation between train/test
-\end{itemize}
+\subsubsection{Data Split}
+We use our collection for \ac{RAG} and benchmark in full. 
+We only split the fine-tuning dataset into training and validation sets with an 90-10 ratio. 
