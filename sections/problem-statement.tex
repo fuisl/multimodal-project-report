@@ -3,9 +3,13 @@
 \label{sec:problem-statement}
 
 The diagnosis process in the medical context is challenging due to its complexity and variability,
-together with the need for fast but accurate decision. 
+together with the need for fast but accurate decision. However, as the general population rises, 
+the medical resources and personnel are struggle with the increasing demand. 
+This calls for a solution reliable enough for medical professionals to delegate some of their basic, repetitive tasks. 
+Given the rises of \ac{LLM} in recent years, this could be a solution to this problem. 
 
-Previous models are trained on mono-modal data, mainly text, which is unrealistic and incomplete, given the nature of 
+However, existing \ac{LLM} models for medical diagnosis still have significant limitations.
+Many models are trained on mono-modal data, mainly text, which is unrealistic and incomplete, given the nature of 
 diagnostic decision-making process. 
 Relying solely on text data limits the model's ability to capture the full clinical context, 
 which risk making inaccurate or incomplete diagnoses.
@@ -13,6 +17,6 @@ Furthermore, existing models are benchmarked on knowledge-heavy data~\cite{thapa
 which contain a major portion of factual information. This benchmarking methods unreliably evaluate the model's reasoning ability. 
 
 Therefore, in this work, we seek to improve the model by integrating multi-modal capability, mainly images. 
-We do this via multi-modal fine-tuning.
+We do this via multi-modal \ac{RAG} and fine-tuning.
 We also seek to truely evaluate the model's reasoning ability by constructing a multi-modal reasoning benchmark, 
 following MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}. 
