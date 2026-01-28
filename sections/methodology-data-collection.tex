@@ -20,44 +20,59 @@ For the QA-set, we utilize the medbullet\_op5 set from LangAGI-Lab on HuggingFac
 which contains sampled questions from \ac{USMLE}, a well-known medical licensing examination in the United States.
 We also synthesize another set based on 93 clinical case reports provided by the lecturer and 
 80 open-access case reports from the \ac{AJTMH}.
-The data sources in our collection are summarized in Table~\ref{tab:data-sources-type} and Table~\ref{tab:data-sources}.
+The data sources in our collection are summarized in Table~\ref{tab:data-sources}.
 
 % Add table summarizing data sources
-\begin{table}[htbp]
+\begin{table*}[htbp]
 \centering
-\begin{tabular}{ll}
+\begin{tabular}{llll}
 \hline
-\textbf{Name} & \textbf{Volume} \\
+\textbf{Name} & \textbf{Volume} & \textbf{Type} & \textbf{Modality} \\
 \hline
-Manson's Tropical Infectious Diseases \\ (23rd Edition) & 80 chapters - 1655 pages \\
-Manson's Tropical Diseases \\ (24th Edition) & 84 chapters - 1634 pages \\
-Tropical and Parasitic Infections \\ in the ICU & 12 chapters - 247 pages \\
-Current Topics in Tropical Medicine & 29 chapters - 578 pages \\
-WHO & 50 fact-sheets \\
-medbullet\_op5 & 160 QA pairs \\
-Moodle & 93 case reports \\
-\acs{AJTMH} & 80 case reports \\
+Manson's Tropical Infectious Diseases (23rd Ed.) 
+& 80 ch. / 1655 pp. & Textbook & Text + Images \\
+
+Manson's Tropical Diseases (24th Ed.) 
+& 84 ch. / 1634 pp. & Textbook & Text + Images \\
+
+Tropical and Parasitic Infections in the ICU 
+& 12 ch. / 247 pp. & Textbook & Text + Images \\
+
+Current Topics in Tropical Medicine 
+& 29 ch. / 578 pp. & Textbook & Text + Images \\
+
+WHO 
+& 50 fact-sheets & Fact-sheet & Text \\
+
+medbullet\_op5 
+& 160 QA pairs & QA-set & Text + Images \\
+
+Moodle 
+& 93 case reports & Case Report & Text + Images \\
+
+\acs{AJTMH} 
+& 80 case reports & Case Report & Text + Images \\
 \hline
 \end{tabular}
 \caption{Overview of Data Sources}
 \label{tab:data-sources}
-\end{table}
+\end{table*}
 
-\begin{table}[htbp]
-\centering
-\begin{tabular}{ll}
-\hline
-\textbf{Source Type} & \textbf{Modality} \\
-\hline
-Textbook & Text + Images \\
-Case Report & Text + Images \\
-Fact-sheet & Text \\
-QA-set & Text + Images \\
-\hline
-\end{tabular}
-\caption{Overview of Data Sources Type} 
-\label{tab:data-sources-type}
-\end{table}
+% \begin{table}[htbp]
+% \centering
+% \begin{tabular}{ll}
+% \hline
+% \textbf{Source Type} & \textbf{Modality} \\
+% \hline
+% Textbook & Text + Images \\
+% Case Report & Text + Images \\
+% Fact-sheet & Text \\
+% QA-set & Text + Images \\
+% \hline
+% \end{tabular}
+% \caption{Overview of Data Sources Type} 
+% \label{tab:data-sources-type}
+% \end{table}
 
 
 \subsubsection{Data Partition}
@@ -71,7 +86,7 @@ Our partition is visualized in Figure~\ref{fig:data-splits}.
 % Optional: Add figure showing data split visualization
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/data_partition.png}
+  \includegraphics[width=\columnwidth]{figures/data_partition.png}
   \caption{Data partition for different components}
   \label{fig:data-splits}
 \end{figure}
