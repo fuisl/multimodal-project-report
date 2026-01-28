@@ -38,168 +38,53 @@ In a general RAG system, there are three distinct phases that define its operati
 \subsubsection{Fine-tuning Pipeline}
 \label{sec:finetuning-pipeline}
 
-\paragraph{Base Model Selection}
-The selection of base model considered multiple factors:
+\paragraph{Overview Fine-tuning}
+Fine-tuning adapts a pre-trained large language model to a specific task or domain using supervised data. In this work, we employ instruction fine-tuning, training the model on our generated question–answer dataset. The objective is to teach the model to perform clinical diagnosis following the format proposed in the MedCaseReasoning paper, which includes both the final diagnosis and the corresponding reasoning. Through this process, we aim to improve diagnostic accuracy while producing more coherent and plausible reasoning, which improves the interpretability in sensitive medical contexts. Fine-tuning is implemented using NVIDIA NeMo, a framework optimized for efficient GPU-based training.
 
-\begin{itemize}
-    \item \textbf{Model Candidates:}
-    \begin{itemize}
-        \item [e.g., LLaVA-Med, MedFlamingo, BioGPT, Clinical BERT variants]
-        \item Selection Criteria: Multimodal capability, medical domain knowledge, computational efficiency
-    \end{itemize}
-    
-    \item \textbf{Chosen Model:} [Specify your selected model]
-    \begin{itemize}
-        \item Architecture: [e.g., Vision encoder + Language model]
-        \item Parameters: [e.g., 7B, 13B]
-        \item Pretraining: [Describe pretraining data/domain]
-    \end{itemize}
-\end{itemize}
+\paragraph{Fine-tuning Pipeline}
+As illustrated in Fig.~\ref{fig:fine-tune-pipeline}, the fine-tuning pipeline in NeMo generally has five steps.
 
-\paragraph{Fine-tuning Methodology}
-Given computational constraints, we employed parameter-efficient fine-tuning (PEFT):
-
-\begin{enumerate}
-    \item \textbf{LoRA (Low-Rank Adaptation):}
-    \begin{itemize}
-        \item Rank: [e.g., r=8 or r=16]
-        \item Alpha: [e.g., $\alpha$=16 or $\alpha$=32]
-        \item Target Modules: [e.g., query, key, value projections, attention layers]
-        \item Trainable Parameters: [e.g., $<$1\% of total parameters]
-    \end{itemize}
-    
-    \item \textbf{Alternative PEFT Methods (if used):}
-    \begin{itemize}
-        \item QLoRA: Quantization + LoRA for memory efficiency
-        \item Prefix Tuning: Learn soft prompts
-        \item Adapter Layers: Insert trainable modules
-    \end{itemize}
+\begin{enumerate}[label=\roman*.]
+    \item Step 1: We take in the benchmark dataset as a csv file.
+    \item Step 2: We convert the dataset into NeMo-compatible formats, particularly WebDataset (WDS) shards and ingest it through NeMo’s data loader.
+    \item Step 3: We set training configuration and select model components (e.g., attention layers) for LoRA fine-tuning according to the provider's recipe.
+    \item Step 4: The fine-tuning process is executed using NeMo’s trainer module and monitored using Weight and Biases (Wandb).
+    \item After training, the learned LoRA adapters or fine-tuned checkpoints are exported. During inference later, we can serve the resulting model using vLLM.
 \end{enumerate}
 
-\paragraph{Training Configuration}
-\begin{itemize}
-    \item \textbf{Optimization:}
-    \begin{itemize}
-        \item Optimizer: [e.g., AdamW]
-        \item Learning Rate: [e.g., 2e-4 with warmup]
-        \item Scheduler: [e.g., cosine annealing, linear decay]
-        \item Batch Size: [e.g., 8 per device, gradient accumulation=4]
-    \end{itemize}
-    
-    \item \textbf{Regularization:}
-    \begin{itemize}
-        \item Dropout: [e.g., 0.1]
-        \item Weight Decay: [e.g., 0.01]
-        \item Gradient Clipping: [e.g., max norm=1.0]
-    \end{itemize}
-    
-    \item \textbf{Training Procedure:}
-    \begin{itemize}
-        \item Epochs: [e.g., 10-20 epochs]
-        \item Early Stopping: Patience=[e.g., 3 epochs] on validation loss
-        \item Checkpoint Strategy: Save best model based on [metric]
-    \end{itemize}
-    
-    \item \textbf{Hardware:}
-    \begin{itemize}
-        \item GPUs: [e.g., 2x A100 40GB, or 4x V100 32GB]
-        \item Precision: [e.g., mixed precision FP16/BF16]
-        \item Training Time: [e.g., approximately X hours]
-    \end{itemize}
-\end{itemize}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/Finetune_Pipeline.png}
+\caption{Overview of fine-tuning pipeline}
+\label{fig:fine-tune-pipeline}
+\end{figure}
 
-\paragraph{Loss Function}
-\begin{itemize}
-    \item Primary Loss: [e.g., Cross-Entropy for classification, Language Modeling loss for generation]
-    \item Weighted Loss: [If handling class imbalance] weights=[specify]
-    \item Auxiliary Losses: [If any - e.g., contrastive loss for multimodal alignment]
-\end{itemize}
+\paragraph{Fine-tuning Configuration}
+We fine-tune the Gemma-4B-IT model using a parameter-efficient approach based on Low-Rank Adaptation (LoRA), optimized with the Adam optimizer. The LoRA configuration uses a rank of $r=4$ and a scaling factor of $\alpha=16$. Training is performed for a maximum of 1,000 steps with early stopping applied using a patience of 10 steps. The learning rate is set to $1\times10^{-5}$, with a weight decay of 0.01.
 
+The dataset consists of 109 cases and is split into training and validation sets using an 9:1 ratio. All experiments are conducted on a single NVIDIA RTX 4090 GPU.
 
-\subsubsection{Hybrid Combination Approach}
+\subsubsection{Hybrid Combination Approach and User Interface}
 \label{sec:hybrid-approach}
 
-The hybrid approach integrates the strengths of both RAG and fine-tuning:
+\paragraph{Combination Overview}
 
-\paragraph{Architecture}
-\begin{enumerate}
-    \item \textbf{Base:} Fine-tuned multimodal model with domain-specific adaptations
-    \item \textbf{Enhancement:} RAG layer for dynamic knowledge augmentation
-    \item \textbf{Integration Strategy:}
-    \begin{itemize}
-        \item \textbf{Option 1 - Sequential:} RAG retrieves context $\rightarrow$ fine-tuned model processes
-        \item \textbf{Option 2 - Parallel:} Both systems generate predictions $\rightarrow$ ensemble/fusion
-        \item \textbf{Option 3 - Adaptive:} Model decides when to invoke RAG based on confidence
-    \end{itemize}
-\end{enumerate}
+To leverage the strengths of both methods, we integrate them into a unified pipeline using LangGraph. As illustrated in Fig.~\ref{fig:combined-pipeline}, which is visualized through the built-in LangGraph CLI interface, the overall workflow consists of three main steps: case extraction, model calling, and result export. Within the model invocation step, a conditional mechanism allows users to select among four operating modes: a baseline model only, a model augmented with \ac{RAG}, a fine-tuned model, and a model enhanced with both \ac{RAG} and fine-tuning.
 
-\paragraph{Implementation Details}
-\begin{itemize}
-    \item \textbf{Context Integration:} [Describe how retrieved knowledge is incorporated]
-    \item \textbf{Fusion Method:} [e.g., attention-based fusion, weighted averaging, gating mechanism]
-    \item \textbf{Inference Pipeline:}
-    \begin{enumerate}
-        \item Input processing (text + images)
-        \item RAG retrieval (if applicable)
-        \item Fine-tuned model forward pass
-        \item Context fusion
-        \item Output generation
-    \end{enumerate}
-\end{itemize}
+During inference, the user provides a clinical question along with associated images, either as local file paths or in Base64 format. The \ac{RAG} system first retrieves relevant contextual information based on the question and then concatenates the question, the images (with local files loaded and encoded into Base64), and the retrieved context into a single model input. The pipeline produces a concise output that directly answers the question, such as a diagnosis or symptom, followed by the corresponding reasoning. The system prompt and the concatenated prompt format used during inference are provided in the Appendix.
 
-\paragraph{Advantages}
-\begin{itemize}
-    \item Combines model's learned diagnostic patterns with up-to-date medical knowledge
-    \item Provides better interpretability through retrieved evidence
-    \item Handles both common and rare diseases effectively
-\end{itemize}
-
-
-\subsubsection{Agent-based Approach (if applicable)}
-\label{sec:agent-approach}
-
-% Include this section if you implemented an agent-based system
-If an agent-based architecture was employed:
-
-\begin{itemize}
-    \item \textbf{Agent Framework:} [e.g., LangChain, AutoGPT, ReAct]
-    \item \textbf{Tools/Actions:}
-    \begin{itemize}
-        \item Medical knowledge retrieval
-        \item Differential diagnosis generation
-        \item Test ordering simulation
-        \item Literature search
-    \end{itemize}
-    \item \textbf{Reasoning Strategy:} [e.g., Chain-of-Thought, ReAct, Tree-of-Thoughts]
-    \item \textbf{Multi-step Workflow:} [Describe diagnostic reasoning steps]
-\end{itemize}
-
-
-\subsubsection{Model Training Summary}
-
-% Add table comparing the three approaches
-\begin{table}[htbp]
-\caption{Comparison of Model Approaches}
-\label{tab:model-comparison}
+\begin{figure}[htbp]
 \centering
-\small
-\begin{tabular}{llll}
-\hline
-\textbf{Aspect} & \textbf{RAG} & \textbf{Fine-tuning} & \textbf{Hybrid} \\
-\hline
-Training Required & No & Yes & Yes \\
-External Knowledge & Dynamic & Static & Dynamic \\
-Computational Cost & Low & High & Medium \\
-Interpretability & High & Low & High \\
-Rare Disease Handling & Good & Limited & Excellent \\
-\hline
-\end{tabular}
-\end{table}
+\includegraphics[width=\columnwidth]{figures/Combined_Flow.png}
+\caption{Overview of combined pipeline}
+\label{fig:combined-pipeline}
+\end{figure}
 
-% Optional: Add training curves or architecture diagrams
-% \begin{figure}[htbp]
-%   \centering
-%   \includegraphics[width=\linewidth]{figures/training-curves}
-%   \caption{Fine-tuning training and validation curves}
-%   \label{fig:training-curves}
-% \end{figure}
+\paragraph{User Interface}
+To simulate real usage and bring the application closer to its intended end users, such as patients and clinicians, we developed an interface based on the LangGraph CLI that enables real-time chat with support for image attachments. Although the diagnostic process is currently limited to single-turn interactions, the interface abstracts away technical details and allows users to focus on the system’s functionality. A demonstration conversation between a human user and the AI system is shown in Fig.~\ref{fig:combined-ui}. The AI first presents a concise answer, followed by the corresponding reasoning.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/Combined_UI.png}
+\caption{Overview of user interface}
+\label{fig:combined-ui}
+\end{figure}

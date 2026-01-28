@@ -43,6 +43,56 @@ LightRAG provides a built-in user interface that offers an overview of the entir
 \label{fig:knowledge-graph}
 \end{figure}
 
+\subsection{Prompts for Diagnostic Inference}
+
+To maintain consistency with the benchmark answer and reasoning style, we took inspiration from the MedCaseReasoning prompt during inference and adopt the special tags <think> and <answer>. This prompt design ensures that the model produces separate outputs for reasoning and final answers while generating both within a single inference call.
+
+\begin{lstlisting}[caption={System Prompt Used for Medical Reasoning}, label={lst:system-prompt}]
+MEDCASE_SYSTEM_PROMPT = """You are a medical reasoning assistant.
+
+Follow these rules STRICTLY:
+1. First, reason internally and output it ONLY inside <think>...</think>.
+2. Then output ONLY the final answer inside <answer>...</answer>.
+3. Do NOT include the final answer inside the reasoning.
+4. Base reasoning only on provided context, images, and established medical facts.
+5. Explicitly state uncertainty if evidence is insufficient.
+6. Use concise, professional clinical language.
+7. Output plain text only. No markdown.
+
+You MUST follow the output template exactly.
+"""
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Inference-Time Prompt Formatting Template}, label={lst:prompt-format}]
+f"""
+----------------------------------------
+CASE PRESENTATION
+----------------------------------------
+Question:
+{question}
+
+Retrieved Context:
+{context_block if context_block else "None"}
+
+Images:
+{image_block if image_block else "None"}
+
+----------------------------------------
+OUTPUT TEMPLATE
+----------------------------------------
+<think>
+...your internal reasoning...
+</think>
+<answer>
+...final answer only...
+</answer>
+
+----------------------------------------
+EXAMPLES
+----------------------------------------
+{FEW_SHOT_EXAMPLES}
+"""
+\end{lstlisting}
 
 \subsection{Data Samples}
 We showcase samples from our fine-tuning dataset. 
