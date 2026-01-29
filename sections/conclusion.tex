@@ -9,7 +9,19 @@ and limited resources constrain timely and accurate clinical decision-making.
 Despite recent advances in medical AI, existing systems remain constrained by restricted multimodal integration, inefficient context understanding, generalization difficulties, and concerns regarding interpretability.
 To overcome these limitations, we implemented a multimodal diagnostic system leveraging large multimodal models, systematically compare Retrieval-Augmented Generation (LightRAG), domain-specific fine-tuning using NVIDIA NeMo, and a hybrid approach. We also established a comprehensive evaluation framework to assess diagnostic accuracy, reasoning quality, and reliability across diverse disease categories.
 
-Our contributions include implementation and systematic comparative evaluation of three multimodal clinical decision-support approaches: Retrieval-Augmented Generation (LightRAG), domain-specific fine-tuning using NVIDIA NeMo, and a hybrid architecture integrating both strategies. We further construct a standardized multimodal benchmark dataset and develop a unified fine-tuning dataset with structured diagnostic answers and step-by-step reasoning aligned with a USMLE-inspired MedCaseReasoning workflow. In addition, we design a rigorous evaluation framework leveraging RAGAS to assess diagnostic accuracy and reasoning quality, and implement an interactive LangGraph-based interface with step-level reasoning monitoring to enhance transparency and interpretability.
+Our contributions include implementation and systematic comparative evaluation of three multimodal clinical decision-support approaches: Retrieval-Augmented Generation (LightRAG), 
+domain-specific fine-tuning using NVIDIA NeMo, and a hybrid architecture integrating both strategies. We further construct a standardized multimodal benchmark dataset and develop a 
+unified fine-tuning dataset with structured diagnostic answers and step-by-step reasoning aligned with a USMLE-inspired MedCaseReasoning workflow. In addition, we design a rigorous 
+evaluation framework leveraging RAGAS to assess diagnostic accuracy and reasoning quality, and implement an interactive LangGraph-based interface with step-level reasoning monitoring 
+to enhance transparency and interpretability. 
+
+When interpreting the results, we can observe that while the implemented models are not yet reliable as fully autonomous diagnostic clinical decision-support systems, 
+their strong reasoning alignment and significant performance improvements through RAG and fine-tuning integration highlight their meaningful clinical potential. Specifically, the combination of external knowledge 
+retrieval and enhanced reasoning capability positions these models as promising clinical decision-support tools, especially for generating structured and clinically relevant differential diagnoses. 
+Future works should focus on further improving context precision and overall diagnostic accuracy by integrating an effective reranking module into the retrieval pipeline.
+We additionally recommend expanding and refining the benchmark dataset to increase the disease diversity and clinical realism. Subsequently, exploring and adopting more clinically
+meaningful evaluation metrics, such as top-k differential diagnosis accuracy, will better reflect real-world diagnostic performance.
+
 % \subsection{Key Findings}
 % % TODO: Summarize key findings from your evaluation
 
