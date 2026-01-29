@@ -7,34 +7,28 @@
 
 Tropical infectious diseases remain a major public health burden in numerous regions worldwide, particularly in regions with limited healthcare resources and specialist expertise. 
 Early and accurate diagnosis is critical to reduce transmission, and improve patient outcomes. However, in resource-constrained settings, symptoms are often nonspecific and overlapping among various tropical diseases, complicating the diagnostic process.
-Diagnostic decisions rely on heterogeneous data sources—including clinical history, laboratory tests, and medical imaging—which often provide incomplete evidence when considered separately, increasing uncertainty and cognitive burden for healthcare providers. 
+Diagnostic decisions rely on heterogeneous data sources—including clinical history, laboratory tests, and medical imaging - which often provide incomplete evidence when considered separately, increasing uncertainty and cognitive burden for healthcare providers. 
 
 
 % Advances in AI and Multimodal Learning
 Recent advances in Artificial Intelligence, especially Large Language Models(LLMs) and Large Multimodal Models (LMMs), have demonstrated remarkable capabilities in understanding and reasoning over heterogeneous data types, including text, images, and structured medical data. When adapted to healthcare, these models offer the potential to integrate diverse clinical inputs and provide context-aware diagnostic support.
-However, for tropical and infectious diseases, current GenAI systems remain limited in multimodal integration and contextual understanding, leading to challenges in delivering accurate, reliable, and contextually relevant reasoning for complex medical diagnosis. Furthermore, the scarcity of high-quality multimodal datasets, inhibits the effective training and evaluating these models in real-world clinical scenarios.
-Interpretability and trustworthiness are also critical concerns, as AI-generated recommendations must be understood and validated by clinicians to ensure patient safety and ethical standards.
+However, for tropical and infectious diseases, current systems struggle to combine different data types and understand clinical context, making it difficult to provide accurate and trustworthy diagnostic reasoning. Additionally, the lack of high-quality multimodal datasets limits the training and testing of these models in real clinical settings.
+Interpretability and trustworthiness are critical for clinical adoption, requiring AI-generated recommendations to be transparent and verifiable by clinicians to ensure patient safety and ethical standards.
 
-For these reasons, there is a pressing need to develop robust multimodal AI systems integrating various data sources and types to enhance the diagnostic accuracy and reasoning capabilities. Multiple approaches, including Retrieval-Augmented Generation (RAG), fine-tuning of pre-trained models, and hybrid strategies, should be implemented and rigorously evaluated to identify optimal solutions for clinical decision support in tropical infectious diseases.
-Comprehensive evaluation and analysis of model performance is also essential to tackle challenges related to generalization and interpretability.
+For these reasons, there is a pressing need to develop robust multimodal AI systems integrating various data sources and types to enhance the diagnostic accuracy and reasoning capabilities. Multiple approaches, including Multimodal Retrieval-Augmented Generation (RAG), fine-tuning of pre-trained models on multimodal data, and hybrid strategies, should be implemented and rigorously evaluated to identify optimal solutions for clinical decision support in tropical infectious diseases.
+Comprehensive evaluation of model performance is essential to address generalization and interpretability challenges.
 
 % Motivation for this Work
 
 % Research Contributions
-The key contributions of this research include:
+The key contributions of this project include:
 \begin{itemize}
-    \item Implementation and comparative evaluation of three approaches for clinical decision support in tropical infectious diseases: Retrieval-Augmented Generation (LightRAG), domain-specific fine-tuning using NVIDIA NeMo, and a hybrid approach architectures that integrate both strategies.
-    \item Construction of a standardized benchmark multimodal dataset combining clinical text, medical images, and structured patient data for tropical and infectious disease diagnosis.
-    \item Development of a unified fine-tuning dataset with structured diagnostic answers and step-by-step reasoning, formatted in a USMLE-inspired style and aligned with the MedCaseReasoning workflow.
-    \item Design of a rigorous evaluation framework assessing model performance using RAGAS.
-    \item Implementation of an interactive interface with step-level reasoning monitoring using LangGraph.
+    \item Comparative evaluation of three approaches: Multimodal Retrieval-Augmented Generation (LightRAG), domain-specific instruction fine-tuning with multimodal data (NVIDIA NeMo), and a hybrid architecture combining both strategies.
+    \item Construction of a multimodal benchmark dataset integrating clinical text, medical images, and structured patient data for tropical infectious disease diagnosis.
+    \item Development of a fine-tuning dataset with structured diagnostic reasoning in USMLE format.
+    \item Rigorous evaluation framework using RAGAS metrics.
+    \item Interactive interface with step-level reasoning monitoring via LangGraph.
 \end{itemize}
 
 % Paper Organization
 The remainder of this paper is organized as follows: Section~\ref{sec:problem-statement} presents the problem statement, objectives, and research hypotheses. Section~\ref{sec:methodology} details our methodology including data collection, preparation, model development, and evaluation frameworks. Section~\ref{sec:conclusion} discusses our findings, interprets results, and outlines future research directions.
-% TODO: Add background and context about tropical and infectious disease diagnosis challenges
-% TODO: Discuss advances in AI and multimodal learning
-% TODO: Explain motivation for this work
-% TODO: List key research contributions
-% TODO: Add paper organization
-
