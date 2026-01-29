@@ -8,35 +8,32 @@ We preprocess the collected raw data to convert it into structured formats for o
 In our case, only the fine-tuning and benchmarking datasets require extensive and systematic processing. 
 Our processing steps for each dataset are shown in Figure~\ref{fig:data-processing}.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.8\linewidth]{figures/data_processing.png}
   \caption{Data Processing for Different Sets}
   \label{fig:data-processing}
-\end{figure}
+\end{figure*}
 
 \paragraph{Fine-tuning Dataset Processing}
 The dataset we collect from HuggingFace is a mono-modal multiple-choice \ac{CoT} dataset 
 (as shown in Figure~\ref{fig:medbullet-qa-image} and Figure~\ref{fig:medbullet-reasoning}),
 which contains a link to the corresponding question on a community-driven educational platform to prepare for the \ac{USMLE}, 
-as well as the question (the case description or case prompt), the multiple choices and the correct choices,
+as well as the question (as for \textit{case description} or \textit{case prompt}), the multiple choices and the correct choices,
 and the detailed reasoning for the correct answer. 
 However, as we want our model to handle open-ended questions with a multi-modal input,
-we process the data to convert the question and reasoning to open-ended formats with multi-modal inputs. 
-Specifically, we prompt-engineer based on the original MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}
-prompt to rewrite the question and reasoning into an open-ended format.
-We also convert the pair into multi-modal by crawling the relevant images via the links provided using Firecrawl. 
-Observing that the set has one image per question, we append the encoded image to base64 into an extra column in the dataset.
+we process the data to convert the question and reasoning to open-ended formats with medical image inputs. 
+Specifically, we prompt-engineer based on MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic} paper which proven to be effective in generating high-quality diagnostic reasoning to rewrite the question and reasoning into an open-ended format.
+We then convert the pair into multi-modal input by crawling the relevant images via the links provided using Firecrawl~\cite{firecrawl}. 
+For convention, we append the based64 encoded image into an extra column in the dataset.
 
 \paragraph{Benchmarking Dataset Processing}
-The case reports we collect are mostly in PDF, so firstly we extract it to markdown with MinerU.
+The case reports we collected are mostly in PDF, so firstly we extract it to markdown with MinerU~\cite{mineru}.
 We then filter the image paths, appending them immediately after the mention of the figure in the text. 
-This is because MinerU extracts based on layout, so the image paths are mixed in other parts.
-Finally, we prompt-engineer based on the original MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic}
-to handle multi-modal data, specifically the images, since the original prompt deliberately omits other data modalities than text.
-Besides that, we also customize a new prompt for the model to regenerate the question and reasoning, 
-if the auditing raises any issues. Finally, we devise the synthesizing pipeline and build a simple agentic loop with LangGraph 
-to iteratively generate the question and reasoning from the case report text using \text{gemma-3-27b-it}. 
+This is because MinerU utilizes \ac{VLM} to extract data based on layout, so the image paths are mixed in other parts.
+Similarly to the fine-tuning dataset, we also need to convert the case report into a question and reasoning pair following MedCaseReasoning~\cite{wu2025medcasereasoningevaluatinglearningdiagnostic} to handle multi-modal data since the original prompt deliberately omits other data modalities than text.
+Besides that, we prompt-tune for the model to regenerate the question and reasoning if needed to control the quality of the output. Finally, we devise the synthesizing pipeline and build a simple agentic loop with LangGraph~\cite{langgraph} 
+to iteratively generate the question and reasoning from the case report text using \texttt{gemma-3-27b-it} and \texttt{gemini-3}. 
 
 The loop is a simple state-machine process, with actions bound with the states, as shown in Figure~\ref{fig:agentic_loop_graph}. 
 The loop contains two decision nodes, one to decide whether to process the case after evaluation, 
@@ -44,11 +41,11 @@ and one to decide whether to retry the case at the end.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[height=0.8\linewidth]{figures/graph.png}
+  \includegraphics[width=\columnwidth]{figures/graph.png}
   \caption{Data Extraction Graph}
   \label{fig:agentic_loop_graph}
 \end{figure}
 
 \subsubsection{Data Split}
 We use our collection for \ac{RAG} and benchmark in full. 
-We only split the fine-tuning dataset into training and validation sets with an 90-10 ratio. 
+We only split the fine-tuning dataset into training and validation sets with 9:1 ratio. 

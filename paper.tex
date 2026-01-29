@@ -499,14 +499,13 @@ Ho Chi Minh City, Vietnam\\
 \fi
 
 \begin{abstract}
-Tropical infectious diseases pose significant diagnostic challenges, particularly in resource-limited settings where overlapping symptoms and 
-fragmented clinical data increase uncertainty and delay treatment. Although recent advances in large language models (LLMs) and multimodal models (LMMs) 
-offer potential for integrating text, medical images, and structured data, current GenAI systems remain limited in domain-specific adaptation, 
+\textit{Tropical infectious diseases pose significant diagnostic challenges, particularly in resource-limited settings where overlapping symptoms and 
+fragmented clinical data increase uncertainty and delay treatment. Although recent advances in large language Models (LLMs) and large multimodal models (LMMs) 
+offer potential for integrating multiple type of medical data (patient profile, labs, scans, etc.), current systems remain limited in domain-specific adaptation, 
 multimodal reasoning, and interpretability, partly due to the lack of standardized datasets for tropical disease diagnosis. To address these gaps, 
-we develop and comparatively evaluate three approaches for multimodal clinical decision support: Retrieval-Augmented Generation (LightRAG), 
-domain-specific fine-tuning using NVIDIA NeMo, and a hybrid architecture combining both strategies. We construct a standardized performance is assessed 
-using an automated evaluation framework based on RAGAS, and interpretability is enhanced through a LangGraph interface with step-level reasoning monitoring. 
-Our findings provide systematic insights into grounded, reliable, and interpretable AI-assisted diagnosis for tropical infectious diseases. Our code is publicly available on GitHub.\footnote{\url{https://github.com/fuisl/meditropical}}
+we develop and comparatively evaluate three approaches for multimodal clinical decision support: (1) Multimodal Retrieval-Augmented Generation, 
+(2) Fine-tuning LMMs with multimodal data for reasoning, and (3) a hybrid architecture combining both strategies. The models performances are assessed
+using automated evaluation framework based on RAGAS, and interpretability is enhanced through a LangGraph interface with step-level reasoning monitoring. Empirically, although overall accuracy remains limited, our results show that integrating both multimodal \ac{RAG} and fine-tuning substantially improves answer accuracy and reasoning capability, respectively. These findings highlight the potential of large multimodal models not as standalone diagnostic systems, but as assistive tools that can provide insightful reasoning and support differential diagnosis. Our code is publicly available on GitHub.\footnote{\url{https://github.com/fuisl/meditropical}}}
 
 \end{abstract}
 
@@ -528,7 +527,7 @@ Tropical Infectious Diseases, Multimodal Large Language Models, Medical Diagnosi
 
 \input{sections/problem-statement}
 
-\input{sections/related-work}
+% \input{sections/related-work}
 
 \input{sections/methodology}
 
@@ -541,7 +540,7 @@ Tropical Infectious Diseases, Multimodal Large Language Models, Medical Diagnosi
 % regular IEEE prefers the singular form
 \section*{Acknowledgment}
 
-We would like to express our deepest gratitude to Dr. Tran Duc Khanh, the instructor of this course, for his invaluable guidance, insightful feedback, and continuous support throughout the entirety of this project. His instruction and comments during weekly report sections were instrumental in shaping the direction and quality of our work.
+We would like to express our deepest gratitude to Dr. Tran Duc Khanh, our instructor for this course, for his invaluable guidance, insightful feedback, and continuous support throughout the entirety of this project. His instruction and comments during weekly report sections were instrumental in shaping the direction and quality of our work.
 
 %%% ===============================================================================
 %%% Bibliography
@@ -565,6 +564,6 @@ We would like to express our deepest gratitude to Dr. Tran Duc Khanh, the instru
 % Enfore empty line after bibliography
 %
 \noindent
-All links were last followed on October 5, 2020.
+All links were last followed on January 29, 2026.
 
 \end{document}
