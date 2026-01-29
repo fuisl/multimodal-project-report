@@ -82,17 +82,17 @@ Custom \\
 
 \paragraph{Evaluation Settings}
 
-We conduct evaluations on retrieval, final answers, and reasoning using a benchmark dataset comprising 78 cases. The LLM-as-judge selected for this evaluation is MedGemma-4b-it. Although common practice recommends using a judge model that is different from the evaluated models and ideally from a different model family to mitigate bias, the requirement for strong medical domain knowledge motivates our choice of a model pre-trained on medical datasets to ensure reliable evaluation.
+We conduct evaluations on retrieval, final answers, and reasoning using a benchmark dataset comprising 78 cases. The LLM-as-judge selected for this evaluation is \texttt{MedGemma-4b-Instruct}. Although common practice recommends using a judge model that is different from the evaluated models and ideally from a different model family to mitigate bias, the requirement for strong medical domain knowledge motivates our choice of a model pre-trained on medical datasets to ensure reliable evaluation.
 
-For each test case, contextual information is retrieved once and then shared across all model settings during inference to ensure a fair comparison while reducing computational overhead. LightRAG employs the bge-m3 embedding model and MedGemma-4b as the retrieval model. Given a text-only query, it retrieves the top 20 most relevant data chunks. Each evaluated model is expected to produce a single final diagnosis along with the corresponding reasoning. In total, we evaluate six diagnostic settings using three models, including MedGemma-4b, Gemma-3-4b-it, and Gemma-3-4b-it-finetuned, each evaluated in two modes: with \ac{RAG} and without \ac{RAG}. The RAG-supported configurations are denoted by the suffix “+ RAG” in the model name.
+For each test case, contextual information is retrieved once and then shared across all model settings during inference to ensure a fair comparison while reducing computational overhead. RAG system employs the \texttt{bge-m3} embedding model and \texttt{MedGemma-4b} as the retrieval model. Given a text-only query, it retrieves the top 20 most relevant data chunks. Each evaluated model is expected to produce a single final diagnosis along with the corresponding reasoning. In total, we evaluate six diagnostic settings using three models, including \texttt{MedGemma-4b}, \texttt{Gemma-3-4b-it}, and \texttt{Gemma-3-4b-it-finetuned}, each evaluated in two modes: with \ac{RAG} and without \ac{RAG}. The RAG-supported configurations are denoted by the suffix “+ RAG” in the model name.
 
 \paragraph{Evaluation Results}
 
-We first evaluate the performance of the LightRAG system. As shown in Table~\ref{tab:lightrag_results}, LightRAG achieves a high Context Recall score of approximately 0.9, indicating effective retrieval of relevant information. However, the Context Precision score remains moderate, at below 0.6, suggesting that retrieved contexts are not optimally ranked by relevance.
+We first evaluate the performance of the multimodal RAG system. As shown in Table~\ref{tab:lightrag_results}, LightRAG+RagAnything achieves a high Context Recall score of approximately 0.9, indicating effective retrieval of relevant information. However, the Context Precision score remains moderate, at below 0.6, suggesting that retrieved contexts are not optimally ranked by relevance.
 
 \begin{table}[htbp]
 \centering
-\caption{LightRAG Retrieval Performance. For all metrics, higher scores indicate better performance with minimum score is 0 and maximum score is 1.}
+\caption{Multimodal RAG Retrieval Performance. For all metrics, higher scores indicate better performance with minimum score is 0 and maximum score is 1.}
 \label{tab:lightrag_results}
 \setlength{\tabcolsep}{2pt} % default is 6pt
 \begin{tabular}{lccc}
@@ -102,7 +102,7 @@ We first evaluate the performance of the LightRAG system. As shown in Table~\ref
 \textbf{Context Recall} &
 \textbf{Context Precision} \\
 \hline
-LightRAG &
+LightRAG+RagAnything &
 Top-20 Chunks &
 0.8932 &
 0.5651 \\
@@ -141,27 +141,27 @@ Next, we evaluate the answer and reasoning performance of each model setting. Th
 \textbf{Reasoning Recall} \\
 \hline
 
-medgemma-4b
+\texttt{medGemma-4b}
 & Answer + Reasoning
 & 0.6837 & 0.1562 & \textbf{0.7051} & 0.4333 \\
 
-medgemma-4b + RAG
+\texttt{medGemma-4b} + RAG
 & Answer + Reasoning
 & \underline{0.7225} & 0.2466 & 0.6167 & 0.3979 \\
 
-gemma3-4b-it
+\texttt{gemma3-4b-it}
 & Answer + Reasoning
 & 0.6944 & 0.1053 & 0.6167 & 0.4887 \\
 
-gemma3-4b-it + RAG
+\texttt{gemma3-4b-it} + RAG
 & Answer + Reasoning
 & \textbf{0.7512} & \textbf{0.3421} & 0.5859 & \underline{0.6434} \\
 
-gemma3-4b-it-finetuned
+\texttt{gemma3-4b-it-finetuned}
 & Answer + Reasoning
 & 0.6313 & 0.0938 & \underline{0.6359} & \textbf{0.6564} \\
 
-gemma3-4b-it-finetuned + RAG
+\texttt{gemma3-4b-it-finetuned} + RAG
 & Answer + Reasoning
 & 0.7130 & \underline{0.3333} & 0.6051 & 0.6165 \\
 

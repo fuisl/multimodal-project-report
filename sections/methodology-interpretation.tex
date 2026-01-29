@@ -5,13 +5,13 @@
 \paragraph{Strengths}
 Upon reviewing the results, several promising findings were observed:
 \begin{itemize}
-    \item Among models evaluated without \ac{RAG} contexts, MedGemma-4b-it performs best, achieving an accuracy nearly 1.5$\times$ higher than the other two models. This result is expected, as MedGemma is extensively fine-tuned on medical datasets, giving it stronger internal medical knowledge compared to the other models.
+    \item Among models evaluated without \ac{RAG} contexts, \texttt{MedGemma-4b-Instruct} performs best, achieving an accuracy nearly 1.5$\times$ higher than the other two models. This result is expected, as MedGemma is extensively fine-tuned on medical datasets, giving it stronger internal medical knowledge compared to the other models.
     
     \item LightRAG retrieves high-quality data chunks, as evidenced by a Context Recall score of approximately 0.9 out of 1. This demonstrates not only the effectiveness of the RAG system but also that the constructed knowledge base is sufficient to answer questions from the benchmark dataset.
     
     \item Both \ac{RAG} and fine-tuning achieve their intended purposes:
     \begin{itemize}
-        \item For \ac{RAG}, the goal is to retrieve relevant domain-specific knowledge to support diagnosis. The results show that RAG successfully fulfills this role, as all three models exhibit substantial performance improvements. In particular, Gemma-3-4b-it and Gemma-3-4b-it-finetuned improve their accuracy by more than 3$\times$ compared to their non-RAG counterparts. MedGemma-4b-it shows a more modest improvement of over 1.5$\times$, which we attribute to its stronger reliance on internal knowledge, which primarily covers general medical cases rather than infectious tropical diseases.
+        \item For \ac{RAG}, the goal is to retrieve relevant domain-specific knowledge to support diagnosis. The results show that RAG successfully fulfills this role, as all three models exhibit substantial performance improvements. In particular, Gemma-3-4b-it and Gemma-3-4b-it-finetuned improve their accuracy by more than 3$\times$ compared to their non-RAG counterparts. \texttt{MedGemma-4b-Instruct} shows a more modest improvement of over 1.5$\times$, which we attribute to its stronger reliance on internal knowledge, which primarily covers general medical cases rather than infectious tropical diseases.
         
         \item For fine-tuning, the objective is to teach the model to generate plausible and trustworthy reasoning to justify its final diagnosis. The results indicate that fine-tuning significantly improves the reasoning capability of Gemma-3-4b-it. The fine-tuned models achieve among the highest reasoning recall scores, closely matching the ground-truth reasoning traces. Additionally, Gemma-3-4b-it with RAG also achieves high reasoning recall, likely due to high-quality retrieved knowledge chunks.
     \end{itemize}
@@ -28,6 +28,6 @@ Despite the positive results, several limitations are identified:
 \paragraph{Conclusion}
 Overall, our experiments indicate that:
 \begin{itemize}
-    \item Both \ac{RAG} and fine-tuning successfully achieve their intended objectives, improving model accuracy and reasoning capability, respectively.
+    \item Both \ac{RAG} and fine-tuning successfully achieve their intended objectives, improving model accuracy and reasoning capability, respectively when working with multimodal medical data.
     \item Although the models do not perform reliably as independent diagnostic systems due to low exact-match accuracy, their strong reasoning abilities suggest they are well-suited as clinical decision-support tools for generating differential diagnoses.
 \end{itemize}

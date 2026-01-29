@@ -14,23 +14,25 @@ Early and accurate diagnosis is critical to reduce transmission, and improve pat
 
 % Advances in AI and Multimodal Learning
 Recent advances in Artificial Intelligence, especially Large Language Models(LLMs) and Large Multimodal Models (LMMs), have demonstrated remarkable capabilities in understanding and reasoning over heterogeneous data types, including text, images, and structured medical data. When adapted to healthcare, these models offer the potential to integrate diverse clinical inputs and provide context-aware diagnostic support.
+
 However, for tropical and infectious diseases, current systems struggle to combine different data types and understand clinical context, making it difficult to provide accurate and trustworthy diagnostic reasoning. Additionally, the lack of high-quality multimodal datasets limits the training and testing of these models in real clinical settings.
+
 Interpretability and trustworthiness are critical for clinical adoption, requiring AI-generated recommendations to be transparent and verifiable by clinicians to ensure patient safety and ethical standards.
 
-For these reasons, there is a pressing need to develop robust multimodal AI systems integrating various data sources and types to enhance the diagnostic accuracy and reasoning capabilities. Multiple approaches, including Multimodal Retrieval-Augmented Generation (RAG), fine-tuning of pre-trained models on multimodal data, and hybrid strategies, should be implemented and rigorously evaluated to identify optimal solutions for clinical decision support in tropical infectious diseases.
-Comprehensive evaluation of model performance is essential to address generalization and interpretability challenges.
+For these reasons, there is a pressing need to develop robust multimodal AI systems integrating various data sources and types to enhance the diagnostic accuracy and reasoning capabilities for tropical infectious diseases. Multiple approaches, including Multimodal Retrieval-Augmented Generation (RAG), fine-tuning of pre-trained models on multimodal data, and hybrid strategies, should be implemented and rigorously evaluated to identify optimal solutions for clinical decision support in tropical infectious diseases.
+% Comprehensive evaluation of model performance is essential to address generalization and interpretability challenges.
 
 % Motivation for this Work
 
 % Research Contributions
 The key contributions of this project include:
 \begin{itemize}
-    \item Comparative evaluation of three approaches: Multimodal Retrieval-Augmented Generation (LightRAG), domain-specific instruction fine-tuning with multimodal data (NVIDIA NeMo), and a hybrid architecture combining both strategies.
+    \item Implementation and comparative evaluation of three approaches: Multimodal Retrieval-Augmented Generation (LightRAG + RAGAnything), domain-specific instruction fine-tuning with multimodal data (NVIDIA NeMo), and a hybrid architecture combining both strategies.
     \item Construction of a multimodal benchmark dataset integrating clinical text, medical images, and structured patient data for tropical infectious disease diagnosis.
     \item Development of a fine-tuning dataset with structured diagnostic reasoning in USMLE format.
-    \item Rigorous evaluation framework using RAGAS metrics.
+    \item Evaluation using RAGAS~\cite{ragas} built-in and custom metrics.
     \item Interactive interface with step-level reasoning monitoring via LangGraph.
 \end{itemize}
 
 % Paper Organization
-The remainder of this paper is organized as follows: Section~\ref{sec:problem-statement} presents the problem statement, objectives, and research hypotheses. Section~\ref{sec:methodology} details our methodology including data collection, preparation, model development, and evaluation frameworks. Section~\ref{sec:conclusion} discusses our findings, interprets results, and outlines future research directions.
+The remainder of this paper is organized as follows: Section~\ref{sec:problem-statement} presents the problem statement, objectives, and research hypotheses. Section~\ref{sec:methodology} details our methodology including data collection, data preparation, model building, evaluation, and interpretation. Section~\ref{sec:conclusion} discusses our findings, interprets results, and outlines future research directions.
