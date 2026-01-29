@@ -2,293 +2,32 @@
 \subsection{Results Interpretation and Analysis}
 \label{sec:interpretation}
 
-% TODO: Outline framework for interpreting evaluation results
-
-\subsubsection{Metric-based Interpretation}
-\label{sec:metric-interpretation}
-
-\paragraph{Diagnostic Performance Interpretation}
-% TODO: Define interpretation criteria for accuracy, F1, AUROC
-% TODO: Analyze precision vs. recall trade-offs
-
-\paragraph{Comparative Performance Analysis}
-Interpret performance differences across methods:
-
+\paragraph{Strengths}
+Upon reviewing the results, several promising findings were observed:
 \begin{itemize}
-    \item \textbf{RAG vs. Fine-tuning:}
-    \begin{itemize}
-        \item If RAG outperforms: External knowledge is crucial; dataset may be limited
-        \item If Fine-tuning outperforms: Sufficient training data; learned patterns are key
-        \item If similar: Both knowledge and learned patterns contribute equally
-    \end{itemize}
+    \item Among models evaluated without \ac{RAG} contexts, MedGemma-4b-it performs best, achieving an accuracy nearly 1.5$\times$ higher than the other two models. This result is expected, as MedGemma is extensively fine-tuned on medical datasets, giving it stronger internal medical knowledge compared to the other models.
     
-    \item \textbf{Hybrid vs. Individual Methods:}
-    \begin{itemize}
-        \item Positive fusion gain: Methods are complementary
-        \item No gain: Methods capture similar information (redundancy)
-        \item Negative impact: Integration introduces noise or confusion
-    \end{itemize}
+    \item LightRAG retrieves high-quality data chunks, as evidenced by a Context Recall score of approximately 0.9 out of 1. This demonstrates not only the effectiveness of the RAG system but also that the constructed knowledge base is sufficient to answer questions from the benchmark dataset.
     
-    \item \textbf{Performance by Disease Category:}
+    \item Both \ac{RAG} and fine-tuning achieve their intended purposes:
     \begin{itemize}
-        \item Better on common diseases: Model relies on training frequency
-        \item Better on rare diseases: External knowledge (RAG) is effective
-        \item Consistent across categories: Robust generalization
+        \item For \ac{RAG}, the goal is to retrieve relevant domain-specific knowledge to support diagnosis. The results show that RAG successfully fulfills this role, as all three models exhibit substantial performance improvements. In particular, Gemma-3-4b-it and Gemma-3-4b-it-finetuned improve their accuracy by more than 3$\times$ compared to their non-RAG counterparts. MedGemma-4b-it shows a more modest improvement of over 1.5$\times$, which we attribute to its stronger reliance on internal knowledge, which primarily covers general medical cases rather than infectious tropical diseases.
+        
+        \item For fine-tuning, the objective is to teach the model to generate plausible and trustworthy reasoning to justify its final diagnosis. The results indicate that fine-tuning significantly improves the reasoning capability of Gemma-3-4b-it. The fine-tuned models achieve among the highest reasoning recall scores, closely matching the ground-truth reasoning traces. Additionally, Gemma-3-4b-it with RAG also achieves high reasoning recall, likely due to high-quality retrieved knowledge chunks.
     \end{itemize}
 \end{itemize}
 
-
-\subsubsection{Method-specific Analysis}
-\label{sec:method-analysis}
-
-\paragraph{RAG System Analysis}
-Interpret RAG-specific results:
-
+\paragraph{Limitations}
+Despite the positive results, several limitations are identified:
 \begin{itemize}
-    \item \textbf{Retrieval Quality Impact:}
-    \begin{itemize}
-        \item High Precision@K but low final accuracy: Generation weakness, not retrieval
-        \item Low Precision@K but high accuracy: Model compensates for poor retrieval
-        \item Both high: Optimal RAG pipeline
-    \end{itemize}
+    \item The RAG system exhibits relatively low context precision (below 0.6), indicating that retrieved data chunks are not optimally ranked by relevance, despite their high quality as shown by Context Recall. This limitation arises because the reranker module was disabled during retrieval due to resource constraints. This metric is expected to improve with an appropriate reranking model in future experiments.
     
-    \item \textbf{Faithfulness vs. Accuracy:}
-    \begin{itemize}
-        \item High faithfulness, high accuracy: Retrieved knowledge is relevant and used correctly
-        \item High faithfulness, low accuracy: Retrieved knowledge is insufficient or incorrect
-        \item Low faithfulness: Model ignores retrieved context (may indicate poor integration)
-    \end{itemize}
-    
-    \item \textbf{Knowledge Source Analysis:}
-    \begin{itemize}
-        \item Which sources (textbooks, articles, guidelines) contribute most to correct diagnoses?
-        \item Are certain disease categories better supported by specific sources?
-    \end{itemize}
+    \item The overall accuracy across all settings remains low (below 0.4), reflecting the high difficulty of the benchmark task. The models must reason over patient context, retrieved medical knowledge, and images. Additionally, the strict evaluation metric requires an almost exact match to the ground-truth diagnosis, with no credit for partial answers. Given the high reasoning recall scores, we believe that evaluating differential diagnosis performance (i.e., top-$k$ predictions with $k>1$) would better reflect the models’ true potential, as their reasoning is largely aligned with correct clinical pathways.
 \end{itemize}
 
-\paragraph{Fine-tuned Model Analysis}
-Interpret fine-tuning results:
-
+\paragraph{Conclusion}
+Overall, our experiments indicate that:
 \begin{itemize}
-    \item \textbf{Training Dynamics:}
-    \begin{itemize}
-        \item Converged training: Model learned effectively
-        \item Overfitting (train $\gg$ val): Need regularization or more data
-        \item Underfitting (both high): Insufficient model capacity or training
-    \end{itemize}
-    
-    \item \textbf{LoRA Impact:}
-    \begin{itemize}
-        \item Compare full fine-tuning vs. LoRA (if both tested)
-        \item Assess parameter efficiency vs. performance trade-off
-    \end{itemize}
-    
-    \item \textbf{Domain Adaptation Success:}
-    \begin{itemize}
-        \item Improvement over base model indicates successful adaptation
-        \item Analyze which aspects (vocabulary, reasoning, multimodal fusion) improved most
-    \end{itemize}
-\end{itemize}
-
-\paragraph{Hybrid System Analysis}
-Interpret combination results:
-
-\begin{itemize}
-    \item \textbf{Complementarity:}
-    \begin{itemize}
-        \item Cases where RAG succeeds and fine-tuning fails (and vice versa)
-        \item Identify patterns indicating when each method is preferred
-    \end{itemize}
-    
-    \item \textbf{Fusion Strategy Effectiveness:}
-    \begin{itemize}
-        \item Compare different fusion methods (ensemble, gating, sequential)
-        \item Assess computational cost vs. performance gain
-    \end{itemize}
-\end{itemize}
-
-
-\subsubsection{Dataset and Data Quality Analysis}
-\label{sec:dataset-analysis}
-
-Interpret results in the context of data characteristics:
-
-\begin{itemize}
-    \item \textbf{Data Sufficiency:}
-    \begin{itemize}
-        \item Learning curves: Does performance plateau or still improving?
-        \item Sample size analysis: Which disease categories need more data?
-    \end{itemize}
-    
-    \item \textbf{Data Quality Impact:}
-    \begin{itemize}
-        \item Correlation between data quality (completeness, accuracy) and performance
-        \item Impact of noisy labels or missing modalities
-    \end{itemize}
-    
-    \item \textbf{Modality Contribution:}
-    \begin{itemize}
-        \item Ablation results: Which modalities (text, images, structured data) contribute most?
-        \item Are certain diseases better diagnosed with specific modalities?
-    \end{itemize}
-    
-    \item \textbf{Distribution Analysis:}
-    \begin{itemize}
-        \item Class imbalance effects: Performance on rare vs. common diseases
-        \item Temporal/geographic distribution: Does model generalize across contexts?
-    \end{itemize}
-\end{itemize}
-
-
-\subsubsection{Error Pattern Analysis}
-\label{sec:error-patterns}
-
-Systematic reasoning about model failures:
-
-\begin{itemize}
-    \item \textbf{Common Error Types:}
-    \begin{itemize}
-        \item Confusion between similar diseases (e.g., malaria vs. dengue)
-        \item Missing rare diseases with subtle presentations
-        \item Over-reliance on common symptoms leading to frequent diagnoses
-    \end{itemize}
-    
-    \item \textbf{Root Causes:}
-    \begin{itemize}
-        \item \textbf{Data limitations:} Insufficient examples, imbalanced distribution, poor quality
-        \item \textbf{Model limitations:} Inadequate reasoning, multimodal fusion issues, knowledge gaps
-        \item \textbf{Task complexity:} Inherently ambiguous cases, multiple valid diagnoses
-    \end{itemize}
-    
-    \item \textbf{Failure Mode Categorization:}
-    \begin{itemize}
-        \item Knowledge failures: Missing critical medical knowledge
-        \item Reasoning failures: Incorrect logical inference
-        \item Perception failures: Misinterpretation of images or text
-        \item Integration failures: Poor multimodal fusion
-    \end{itemize}
-\end{itemize}
-
-
-\subsubsection{Clinical Implications}
-\label{sec:clinical-implications}
-
-Interpret results from a clinical perspective:
-
-\begin{itemize}
-    \item \textbf{Diagnostic Safety:}
-    \begin{itemize}
-        \item Critical error analysis: Could misdiagnoses cause patient harm?
-        \item Uncertainty calibration: Does model appropriately express confidence?
-        \item Safe deployment: Which clinical scenarios are appropriate for system use?
-    \end{itemize}
-    
-    \item \textbf{Clinical Utility:}
-    \begin{itemize}
-        \item Decision support value: How much does system improve clinician performance?
-        \item Workflow integration: Can system be practically deployed in clinical settings?
-        \item Time efficiency: Does system reduce time to diagnosis?
-    \end{itemize}
-    
-    \item \textbf{Reliability and Trust:}
-    \begin{itemize}
-        \item Consistency: Stable performance across diverse cases?
-        \item Explainability: Are diagnostic reasoning explanations clinically sound?
-        \item Limitations awareness: Does system recognize its boundaries?
-    \end{itemize}
-\end{itemize}
-
-
-\subsubsection{Comparative Reasoning Framework}
-\label{sec:comparative-reasoning}
-
-Structured reasoning about comparative results:
-
-\begin{enumerate}
-    \item \textbf{Observation:} State the quantitative findings
-    \begin{itemize}
-        \item Example: "RAG achieved F1=0.82, Fine-tuning F1=0.78, Hybrid F1=0.87"
-    \end{itemize}
-    
-    \item \textbf{Interpretation:} Explain what the numbers mean
-    \begin{itemize}
-        \item Example: "Hybrid approach shows 5-9\% improvement, indicating complementary strengths"
-    \end{itemize}
-    
-    \item \textbf{Reasoning:} Why did this happen?
-    \begin{itemize}
-        \item Example: "RAG excels on rare diseases via external knowledge, while fine-tuned model captures common diagnostic patterns. Hybrid leverages both."
-    \end{itemize}
-    
-    \item \textbf{Evidence:} Support with qualitative analysis
-    \begin{itemize}
-        \item Example: "Error analysis shows RAG fails on diseases absent from knowledge base, while fine-tuning struggles with rare conditions in training set"
-    \end{itemize}
-    
-    \item \textbf{Implications:} What does this mean for the research?
-    \begin{itemize}
-        \item Example: "Suggests combination architectures are essential for comprehensive diagnostic coverage"
-    \end{itemize}
-\end{enumerate}
-
-
-\subsubsection{Hypothesis Validation}
-\label{sec:hypothesis-validation}
-
-Interpret results in relation to initial hypotheses (Section~\ref{sec:problem-statement}):
-
-\begin{itemize}
-    \item \textbf{H1:} RAG outperforms standalone fine-tuning for rare diseases
-    \begin{itemize}
-        \item Supported/Rejected: [Based on your results]
-        \item Reasoning: [Explain why based on metrics and analysis]
-    \end{itemize}
-    
-    \item \textbf{H2:} Hybrid approach achieves superior performance
-    \begin{itemize}
-        \item Supported/Rejected: [Based on your results]
-        \item Reasoning: [Explain why based on metrics and analysis]
-    \end{itemize}
-    
-    \item \textbf{H3:} Multimodal training improves generalization
-    \begin{itemize}
-        \item Supported/Rejected: [Based on your results]
-        \item Reasoning: [Explain why based on metrics and analysis]
-    \end{itemize}
-\end{itemize}
-
-
-\subsubsection{Limitations and Future Directions}
-\label{sec:limitations-interpretation}
-
-Critical analysis of approach limitations revealed through evaluation:
-
-\begin{itemize}
-    \item \textbf{Data Limitations:}
-    \begin{itemize}
-        \item Dataset size, diversity, quality constraints
-        \item Impact on model generalization and robustness
-    \end{itemize}
-    
-    \item \textbf{Model Limitations:}
-    \begin{itemize}
-        \item Architectural constraints
-        \item Computational resource limitations
-        \item Scalability concerns
-    \end{itemize}
-    
-    \item \textbf{Evaluation Limitations:}
-    \begin{itemize}
-        \item Test set representativeness
-        \item Metric comprehensiveness
-        \item Lack of prospective clinical validation
-    \end{itemize}
-    
-    \item \textbf{Future Improvements:}
-    \begin{itemize}
-        \item Enhanced architectures or training strategies indicated by analysis
-        \item Additional data sources or modalities
-        \item Improved evaluation frameworks
-        \item Clinical deployment pathways
-    \end{itemize}
+    \item Both \ac{RAG} and fine-tuning successfully achieve their intended objectives, improving model accuracy and reasoning capability, respectively.
+    \item Although the models do not perform reliably as independent diagnostic systems due to low exact-match accuracy, their strong reasoning abilities suggest they are well-suited as clinical decision-support tools for generating differential diagnoses.
 \end{itemize}
