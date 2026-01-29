@@ -2,12 +2,11 @@
 \section{Conclusion and Outlook}
 \label{sec:conclusion}
 
-This work addresses the critical challenges of clinical diagnosis support for tropical and infectious diseases, which are the complex symptoms, heterogeneous data, 
-and limited resources constrain timely and accurate clinical decision-making.
-Despite recent advances in medical AI, existing systems remain constrained by restricted multimodal integration, inefficient context understanding, generalization difficulties, and concerns regarding interpretability.
-To overcome these limitations, we implemented a multimodal diagnostic system leveraging large multimodal models, systematically compare Retrieval-Augmented Generation (LightRAG), domain-specific fine-tuning using NVIDIA NeMo, and a hybrid approach. We also established a comprehensive evaluation framework to assess diagnostic accuracy, reasoning quality, and reliability across diverse disease categories.
+This work addresses key challenges in clinical decision support for tropical and infectious diseases, where existing systems remain limited by insufficient multimodal integration, poor generalization to tropical infectious diseases, and lack of interpretability.
 
-Our contributions include implementation and systematic comparative evaluation of three multimodal clinical decision-support approaches: Retrieval-Augmented Generation (LightRAG), 
+% To overcome these limitations, we implemented a multimodal diagnostic system leveraging large multimodal models, and systematically compared Multimodal \ac{RAG} (LightRAG + RAGAnything), domain-specific fine-tuning using NVIDIA NeMo, and a hybrid approach. We also established a comprehensive evaluation framework to assess diagnostic accuracy, reasoning quality, and reliability across diverse disease categories.
+
+Our contributions to overcome these limitations include implementation and systematic comparative evaluation of three multimodal clinical decision-support approaches: Multimodal \ac{RAG} (LightRAG + RAGAnything), 
 domain-specific fine-tuning using NVIDIA NeMo, and a hybrid architecture integrating both strategies. We further construct a standardized multimodal benchmark dataset and develop a 
 unified fine-tuning dataset with structured diagnostic answers and step-by-step reasoning aligned with a USMLE-inspired MedCaseReasoning workflow. In addition, we design a rigorous 
 evaluation framework leveraging RAGAS to assess diagnostic accuracy and reasoning quality, and implement an interactive LangGraph-based interface with step-level reasoning monitoring 
@@ -19,37 +18,3 @@ retrieval and enhanced reasoning capability positions these models as promising 
 Future works should focus on further improving context precision and overall diagnostic accuracy by integrating an effective reranking module into the retrieval pipeline.
 We additionally recommend expanding and refining the benchmark dataset to increase the disease diversity and clinical realism. Subsequently, exploring and adopting more clinically
 meaningful evaluation metrics, such as top-k differential diagnosis accuracy, will better reflect real-world diagnostic performance.
-
-% \subsection{Key Findings}
-% % TODO: Summarize key findings from your evaluation
-
-% \subsection{Hypothesis Validation}
-% % TODO: State whether each hypothesis was supported/partially supported/not supported
-
-% \subsection{Limitations}
-% % TODO: Acknowledge limitations of the work
-
-% \subsection{Future Directions}
-% % TODO: Outline future research directions
-
-% Several promising directions emerge from this work:
-
-% \begin{itemize}
-%     \item \textbf{Enhanced Multimodal Fusion:} Investigate advanced fusion architectures and attention mechanisms for better integration of heterogeneous data types.
-    
-%     \item \textbf{Active Learning:} Develop active learning strategies to efficiently identify and acquire training examples for underrepresented disease categories.
-    
-%     \item \textbf{Explainability Enhancements:} Improve interpretability through visualization of attention patterns, decision pathways, and uncertainty quantification.
-    
-%     \item \textbf{Clinical Deployment:} Conduct prospective clinical trials to evaluate real-world performance, workflow integration, and impact on patient outcomes.
-    
-%     \item \textbf{Expanded Disease Coverage:} Extend the system to broader disease categories and integrate with existing clinical decision support infrastructure.
-    
-%     \item \textbf{Continual Learning:} Implement mechanisms for continuous model updating as new medical knowledge and clinical data become available.
-% \end{itemize}
-
-% % Closing Statement
-% \subsection{Concluding Remarks}
-
-% This research demonstrates the potential of multimodal AI systems to enhance clinical decision support for tropical and infectious disease diagnosis. By combining the complementary strengths of retrieval-augmented generation and fine-tuning approaches, we can develop systems that leverage both extensive medical knowledge repositories and learned diagnostic patterns. While significant challenges remain before clinical deployment, our findings provide valuable insights into effective architectures and evaluation methodologies for medical AI systems. As these technologies mature, they hold promise for improving diagnostic accuracy, reducing diagnostic delays, and ultimately enhancing patient care, particularly in resource-limited settings where access to specialized expertise is constrained.
-

@@ -13,7 +13,7 @@ Early and accurate diagnosis is critical to reduce transmission, and improve pat
 
 
 % Advances in AI and Multimodal Learning
-Recent advances in Artificial Intelligence, especially Large Language Models(LLMs) and Large Multimodal Models (LMMs), have demonstrated remarkable capabilities in understanding and reasoning over heterogeneous data types, including text, images, and structured medical data. When adapted to healthcare, these models offer the potential to integrate diverse clinical inputs and provide context-aware diagnostic support.
+Recent advances in Artificial Intelligence, especially Large Language Models \ac{LLMs} and Large Multimodal Models (MLMMs), have demonstrated remarkable capabilities in understanding and reasoning over heterogeneous data types, including text, images, and structured medical data. When adapted to healthcare, these models offer the potential to integrate diverse clinical inputs and provide context-aware diagnostic support.
 
 However, for tropical and infectious diseases, current systems struggle to combine different data types and understand clinical context, making it difficult to provide accurate and trustworthy diagnostic reasoning. Additionally, the lack of high-quality multimodal datasets limits the training and testing of these models in real clinical settings.
 
@@ -27,11 +27,11 @@ For these reasons, there is a pressing need to develop robust multimodal AI syst
 % Research Contributions
 The key contributions of this project include:
 \begin{itemize}
-    \item Implementation and comparative evaluation of three approaches: Multimodal Retrieval-Augmented Generation (LightRAG + RAGAnything), domain-specific instruction fine-tuning with multimodal data (NVIDIA NeMo), and a hybrid architecture combining both strategies.
+    \item Implementation and comparative evaluation of three approaches: Multimodal Retrieval-Augmented Generation (LightRAG~\cite{lightrag} + RAGAnything~\cite{raganything}), domain-specific instruction fine-tuning with multimodal data (NVIDIA NeMo~\cite{nemo}), and a hybrid architecture combining both strategies.
     \item Construction of a multimodal benchmark dataset integrating clinical text, medical images, and structured patient data for tropical infectious disease diagnosis.
-    \item Development of a fine-tuning dataset with structured diagnostic reasoning in USMLE format.
+    \item Development of a fine-tuning dataset with structured diagnostic reasoning in USMLE~\cite{usmle} format.
     \item Evaluation using RAGAS~\cite{ragas} built-in and custom metrics.
-    \item Interactive interface with step-level reasoning monitoring via LangGraph.
+    \item Interactive interface with step-level reasoning monitoring via LangGraph~\cite{langgraph}.
 \end{itemize}
 
 % Paper Organization
