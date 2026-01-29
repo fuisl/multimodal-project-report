@@ -2,4 +2,103 @@
 \subsection{Evaluation Framework}
 \label{sec:evaluation}
 
-\paragraph{Evaluation overvieww}
+\paragraph{Evaluation Overview}
+
+With the improving generalization capabilities of \ac{LLM}s, a growing trend in evaluation is the use of the \emph{LLM-as-judge} paradigm. Instead of relying on domain-specific human experts for manual evaluation, an LLM judge automatically grades model outputs based on predefined prompts and evaluation metrics. While this approach may be less reliable in terms of absolute correctness and trustworthiness compared to expert human evaluation, well-designed metrics and instructions can provide high flexibility, fast evaluation speed, and rapid insights into system performance. In this work, we adopt the RAGAS framework to conduct LLM-as-judge evaluations using both standardized built-in metrics and custom-defined metrics.
+
+\paragraph{Evaluation Metrics}
+
+\paragraph{Evaluation Settings}
+
+We conduct evaluations on retrieval, final answers, and reasoning using a benchmark dataset comprising 78 cases. The LLM-as-judge selected for this evaluation is MedGemma-4b-it. Although common practice recommends using a judge model that is different from the evaluated models and ideally from a different model family to mitigate bias, the requirement for strong medical domain knowledge motivates our choice of a model pre-trained on medical datasets to ensure reliable evaluation.
+
+For each test case, contextual information is retrieved once and then shared across all model settings during inference to ensure a fair comparison while reducing computational overhead. LightRAG employs the bge-m3 embedding model and MedGemma-4b as the retrieval model. Given a text-only query, it retrieves the top 20 most relevant data chunks. Each evaluated model is expected to produce a single final diagnosis along with the corresponding reasoning. In total, we evaluate six diagnostic settings using three models, including MedGemma-4b, Gemma-3-4b-it, and Gemma-3-4b-it-finetuned, each evaluated in two modes: with \ac{RAG} and without \ac{RAG}. The RAG-supported configurations are denoted by the suffix “+ RAG” in the model name.
+
+\paragraph{Evaluation Results}
+
+We first evaluate the performance of the LightRAG system. As shown in Table~\ref{tab:lightrag_results}, LightRAG achieves a high Context Recall score of approximately 0.9, indicating effective retrieval of relevant information. However, the Context Precision score remains moderate, at below 0.6, suggesting that retrieved contexts are not optimally ranked by relevance.
+
+\begin{table}[htbp]
+\centering
+\caption{LightRAG Retrieval Performance. For all metrics, higher scores indicate better performance with minimum score is 0 and maximum score is 1.}
+\label{tab:lightrag_results}
+\setlength{\tabcolsep}{4pt} % default is 6pt
+\begin{tabular}{lccc}
+\hline
+\textbf{Method} &
+\textbf{Output} &
+\textbf{Context Recall} &
+\textbf{Context Precision} \\
+\hline
+LightRAG &
+Top-20 Chunks &
+0.8932 &
+0.5651 \\
+\hline
+\end{tabular}
+\end{table}
+
+Next, we evaluate the answer and reasoning performance of each model setting. The detailed scores, reported in Table~\ref{tab:eval_answer_reasoning}, show that all settings achieve relatively similar results on the Faithfulness and Answer Relevance metrics, with the maximum difference between the best- and worst-performing models being approximately 0.1 for each metric. In contrast, Answer Accuracy and Reasoning Recall exhibit a wider range of performance across different settings. These results are further visualized using bar charts for more exploratory analysis in Fig.~\ref{fig:eval_graph_4} and Fig.~\ref{fig:eval_graph_avg}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=0.8\linewidth]{figures/eval_graph_4_metrics.png}
+  \caption{Comparison of each configuration in each of the 4 metrics}
+  \label{fig:eval_graph_4}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=0.8\linewidth]{figures/Eval_graph_avg.jpg}
+  \caption{Average of 4 metrics by configuration}
+  \label{fig:eval_graph_avg}
+\end{figure}
+
+\begin{table*}[t]
+\centering
+\caption{Performance comparison of models with and without \ac{RAG}. The best and second-best results for each metric are highlighted in \textbf{bold} and \underline{underlined}, respectively. For all metrics, higher scores indicate better performance with minimum score is 0 and maximum score is 1.}
+\label{tab:eval_answer_reasoning}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lc|cccc}
+\hline
+\textbf{Models} &
+\textbf{Output} &
+\textbf{Faithfulness} &
+\textbf{Answer Accuracy} &
+\textbf{Answer Relevance} &
+\textbf{Reasoning Recall} \\
+\hline
+
+medgemma-4b
+& Answer + Reasoning
+& 0.6837 & 0.1562 & \textbf{0.7051} & 0.4333 \\
+
+medgemma-4b + RAG
+& Answer + Reasoning
+& \underline{0.7225} & 0.2466 & 0.6167 & 0.3979 \\
+
+gemma3-4b-it
+& Answer + Reasoning
+& 0.6944 & 0.1053 & 0.6167 & 0.4887 \\
+
+gemma3-4b-it + RAG
+& Answer + Reasoning
+& \textbf{0.7512} & \textbf{0.3421} & 0.5859 & \underline{0.6434} \\
+
+gemma3-4b-it-finetuned
+& Answer + Reasoning
+& 0.6313 & 0.0938 & \underline{0.6359} & \textbf{0.6564} \\
+
+gemma3-4b-it-finetuned + RAG
+& Answer + Reasoning
+& 0.7130 & \underline{0.3333} & 0.6051 & 0.6165 \\
+
+\hline
+\end{tabular}
+\end{table*}
+
+
+
+
+
+
