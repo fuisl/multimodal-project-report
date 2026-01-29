@@ -8,6 +8,78 @@ With the improving generalization capabilities of \ac{LLM}s, a growing trend in 
 
 \paragraph{Evaluation Metrics}
 
+The input JSON used for evaluation contains a subset of the following fields, depending on the metrics being applied:
+\begin{itemize}
+  \item \texttt{question}: the test case
+  \item \texttt{ground\_truth}: the ground-truth final diagnosis
+  \item \texttt{ground\_truth\_reasoning}: the ground-truth reasoning
+  \item \texttt{contexts}: contexts retrieved by the \ac{RAG} system
+  \item \texttt{answer}: the model’s final diagnosis
+  \item \texttt{answer\_reasoning}: the model’s reasoning
+\end{itemize}
+
+However, the RAGAS framework internally supports only four standardized fields:
+\begin{itemize}
+  \item \texttt{user\_input}
+  \item \texttt{response}
+  \item \texttt{retrieved\_context}
+  \item \texttt{reference}
+\end{itemize}
+
+As a result, we decompose the evaluation pipeline into three separate stages to assess different aspects of system performance: RAG, answer, and reasoning.
+
+The summary of all the used metrics is illustrated in Table~\ref{tab:metric_summary}.
+
+\newcommand{\var}[1]{\texttt{\textit{#1}}}
+
+\begin{table*}[t]
+\centering
+\caption{Summary of Evaluation Metrics}
+\label{tab:metric_summary}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{3cm}p{3cm}p{8cm}p{2cm}}
+\hline
+\textbf{Metric Name} &
+\textbf{Purpose} &
+\textbf{Meaning} &
+\textbf{Provider} \\
+\hline
+
+Context Recall &
+RAG Evaluation &
+Measures whether all claims in \var{ground\_truth} and \var{ground\_truth\_reasoning} are supported in the retrieved \var{contexts} &
+RAGAS \\
+
+Context Precision &
+RAG Evaluation &
+Measures whether the retriever ranks relevant chunks higher than irrelevant ones in the retrieved \var{contexts} &
+RAGAS \\
+
+Faithfulness &
+Answer Evaluation &
+Measures whether the \var{answer} is factually grounded in the provided \var{contexts} &
+RAGAS \\
+
+Answer Relevance &
+Answer Evaluation &
+Measures whether the \var{answer} is relevant to the given \var{question} &
+Custom \\
+
+Answer Accuracy &
+Answer Evaluation &
+Measures whether the \var{answer} matches the \var{ground\_truth} &
+Custom \\
+
+Reasoning Recall &
+Reasoning Evaluation &
+Measures whether the \var{answer\_reasoning} covers all key elements of the \var{ground\_truth\_reasoning} &
+Custom \\
+
+\hline
+\end{tabular}
+\end{table*}
+
 \paragraph{Evaluation Settings}
 
 We conduct evaluations on retrieval, final answers, and reasoning using a benchmark dataset comprising 78 cases. The LLM-as-judge selected for this evaluation is MedGemma-4b-it. Although common practice recommends using a judge model that is different from the evaluated models and ideally from a different model family to mitigate bias, the requirement for strong medical domain knowledge motivates our choice of a model pre-trained on medical datasets to ensure reliable evaluation.
@@ -22,7 +94,7 @@ We first evaluate the performance of the LightRAG system. As shown in Table~\ref
 \centering
 \caption{LightRAG Retrieval Performance. For all metrics, higher scores indicate better performance with minimum score is 0 and maximum score is 1.}
 \label{tab:lightrag_results}
-\setlength{\tabcolsep}{4pt} % default is 6pt
+\setlength{\tabcolsep}{2pt} % default is 6pt
 \begin{tabular}{lccc}
 \hline
 \textbf{Method} &
@@ -42,21 +114,21 @@ Next, we evaluate the answer and reasoning performance of each model setting. Th
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[height=0.8\linewidth]{figures/eval_graph_4_metrics.png}
-  \caption{Comparison of each configuration in each of the 4 metrics}
+  \includegraphics[height=0.6\linewidth]{figures/eval_graph_4_metrics.png}
+  \caption{Comparison of each configuration across the four evaluation metrics}
   \label{fig:eval_graph_4}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[height=0.8\linewidth]{figures/Eval_graph_avg.jpg}
-  \caption{Average of 4 metrics by configuration}
+  \includegraphics[height=0.4\linewidth]{figures/Eval_graph_avg.jpg}
+  \caption{Average performance across the four metrics by configuration}
   \label{fig:eval_graph_avg}
 \end{figure}
 
 \begin{table*}[t]
 \centering
-\caption{Performance comparison of models with and without \ac{RAG}. The best and second-best results for each metric are highlighted in \textbf{bold} and \underline{underlined}, respectively. For all metrics, higher scores indicate better performance with minimum score is 0 and maximum score is 1.}
+\caption{Performance comparison of models with and without \ac{RAG}. The best and second-best results for each metric are highlighted in \textbf{BOLD} and \underline{underlined}, respectively. For all metrics, higher scores indicate better performance with minimum score is 0 and maximum score is 1.}
 \label{tab:eval_answer_reasoning}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{lc|cccc}
